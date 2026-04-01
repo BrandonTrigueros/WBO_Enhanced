@@ -9,7 +9,7 @@ var path = require("path"),
   config = require("../configuration.js");
 
 var CSP =
-  "default-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws: wss:";
+  "default-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws: wss:; img-src 'self' data: blob:";
 
 var fileserver = serveStatic(config.WEBROOT, {
   maxAge: 2 * 3600 * 1000,

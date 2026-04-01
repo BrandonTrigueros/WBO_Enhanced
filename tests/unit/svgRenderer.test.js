@@ -111,5 +111,28 @@ describe("svgRenderer", function () {
       assert.ok(svg.includes("<svg"), "should still produce SVG");
       assert.ok(!svg.includes("UnknownTool"), "should not render unknown tool as element");
     });
+
+    it("should render Image element as <image> tag", async function () {
+      var board = {
+        img1: { id: "img1", x: 50, y: 60, width: 200, height: 150, tool: "Image", src: "/images/test/abc123.png" },
+      };
+      var svg = await renderToString(board);
+      assert.ok(svg.includes("<image"), "should contain <image> tag");
+      assert.ok(svg.includes('width="200"'), "should have width");
+      assert.ok(svg.includes('height="150"'), "should have height");
+      // src won't exist on disk so it falls back to the path
+      assert.ok(svg.includes("/images/test/abc123.png"), "should include src path");
+    });
+
+    it("should include Image dimensions in bounding box", async function () {
+      var board = {
+        img1: { id: "img1", x: 500, y: 600, width: 300, height: 200, tool: "Image", src: "/images/test/abc.png" },
+      };
+      var svg = await renderToString(board);
+      // Bounding box should be at least x+width+margin = 500+300+400 = 1200
+      var widthMatch = svg.match(/width="(\d+)"/);
+      assert.ok(widthMatch, "should have width attribute");
+      assert.ok(parseInt(widthMatch[1]) >= 1200, "width should account for image dimensions");
+    });
   });
 });

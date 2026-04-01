@@ -8,6 +8,9 @@
  */
 
 var PDFDocument = require("pdfkit");
+var nodeFs = require("fs");
+var nodePath = require("path");
+var config = require("../configuration.js");
 var wboPencilPoint =
   require("../../client-data/tools/pencil/wbo_pencil_point.js").wboPencilPoint;
 
@@ -110,12 +113,31 @@ function renderStraightLine(doc, el) {
   doc.restore();
 }
 
+function renderImage(doc, el) {
+  if (!el.src) return;
+  try {
+    var filePath = nodePath.join(config.HISTORY_DIR, el.src.replace(/^\//, ""));
+    if (!nodeFs.existsSync(filePath)) return;
+    doc.save();
+    applyTranslate(doc, el);
+    if (el.opacity && el.opacity < 1) doc.opacity(parseFloat(el.opacity));
+    doc.image(filePath, el.x || 0, el.y || 0, {
+      width: el.width || 100,
+      height: el.height || 100,
+    });
+    doc.restore();
+  } catch (e) {
+    // Skip image if file is missing or corrupt
+  }
+}
+
 var elementRenderers = {
   Pencil: renderPencil,
   Text: renderText,
   Rectangle: renderRectangle,
   Ellipse: renderEllipse,
   "Straight line": renderStraightLine,
+  Image: renderImage,
 };
 
 /**
@@ -136,12 +158,13 @@ function computeBoundingBox(boardObj) {
   return elems.reduce(
     function (dim, elem) {
       if (elem._children && elem._children.length) elem = elem._children[0];
+      var ex = (elem.x || 0) + (elem.deltax | 0);
+      var ey = (elem.y || 0) + (elem.deltay | 0);
+      if (elem.width) ex += (elem.width | 0);
+      if (elem.height) ey += (elem.height | 0);
       return {
-        width: Math.max((elem.x + margin + (elem.deltax | 0)) | 0, dim.width),
-        height: Math.max(
-          (elem.y + margin + (elem.deltay | 0)) | 0,
-          dim.height,
-        ),
+        width: Math.max((ex + margin) | 0, dim.width),
+        height: Math.max((ey + margin) | 0, dim.height),
       };
     },
     { width: margin, height: margin },

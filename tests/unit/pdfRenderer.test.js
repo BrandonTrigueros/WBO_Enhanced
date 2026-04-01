@@ -153,4 +153,17 @@ describe("pdfRenderer", function () {
       assert.equal(PX_TO_PT, 72 / 96);
     });
   });
+
+  describe("Image element", function () {
+    it("should produce PDF for board with Image element (missing file gracefully skipped)", async function () {
+      var board = {
+        img1: { id: "img1", x: 100, y: 100, width: 300, height: 200, tool: "Image", src: "/images/test/nonexistent.png" },
+      };
+      var stream = collectStream();
+      await boardToPdf(board, stream);
+      var buf = stream.getBuffer();
+      assert.ok(buf.length > 100, "should produce non-trivial PDF");
+      assert.equal(buf.slice(0, 5).toString("ascii"), "%PDF-");
+    });
+  });
 });

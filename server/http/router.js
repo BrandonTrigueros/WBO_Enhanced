@@ -16,7 +16,8 @@ var path = require("path"),
   { log } = require("../util/log.js"),
   { CSP, fileserver, serveError } = require("./staticMiddleware.js"),
   { handleApiRequest, validateName } = require("./apiRouter.js"),
-  { handleExportRequest } = require("../export/exportRouter.js");
+  { handleExportRequest } = require("../export/exportRouter.js"),
+  { handleImageServe } = require("./imageRouter.js");
 
 // ---- Templates (loaded once) ----
 
@@ -110,6 +111,10 @@ function handleRequest(request, response) {
 
     case "api":
       handleApiRequest(parts, parsedUrl, request, response);
+      break;
+
+    case "images":
+      handleImageServe(parts, request, response);
       break;
 
     case "polyfill.js":

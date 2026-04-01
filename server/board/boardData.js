@@ -272,6 +272,20 @@ class BoardData {
       item.opacity = Math.min(Math.max(item.opacity, 0.1), 1) || 1;
       if (item.opacity === 1) delete item.opacity;
     }
+    if (item.hasOwnProperty("width")) {
+      item.width = parseFloat(item.width) || 0;
+      item.width = Math.min(Math.max(item.width, 0), this.limits.maxBoardSize);
+    }
+    if (item.hasOwnProperty("height")) {
+      item.height = parseFloat(item.height) || 0;
+      item.height = Math.min(Math.max(item.height, 0), this.limits.maxBoardSize);
+    }
+    if (item.hasOwnProperty("src")) {
+      // Only allow relative image paths — no absolute URLs or protocols
+      if (typeof item.src !== "string" || !/^\/images\/[\w%\-_~()]+\/[a-f0-9]+\.(png|jpg|gif|webp)$/.test(item.src)) {
+        delete item.src;
+      }
+    }
     if (item.hasOwnProperty("_children")) {
       if (!Array.isArray(item._children)) item._children = [];
       if (item._children.length > this.limits.maxChildren)

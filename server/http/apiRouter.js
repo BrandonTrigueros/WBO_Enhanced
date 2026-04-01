@@ -5,7 +5,8 @@
  */
 
 var { log } = require("../util/log.js"),
-  bookData = require("../book/bookData.js");
+  bookData = require("../book/bookData.js"),
+  { handleImageUpload } = require("./imageRouter.js");
 
 /**
  * Validate a board/book name.
@@ -46,7 +47,21 @@ function sendJson(response, statusCode, data) {
  * @param {import("http").ServerResponse} response
  */
 function handleApiRequest(parts, parsedUrl, request, response) {
-  if (parts[1] !== "books" || parts.length < 4) {
+  var scope = parts[1]; // "books" or "boards"
+
+  if (scope === "boards" && parts.length >= 4 && parts[3] === "images") {
+    var boardName;
+    try {
+      boardName = validateName(parts[2]);
+    } catch (e) {
+      sendJson(response, 400, { error: "Invalid board name" });
+      return;
+    }
+    handleImageUpload(boardName, request, response);
+    return;
+  }
+
+  if (scope !== "books" || parts.length < 4) {
     sendJson(response, 404, { error: "Not found" });
     return;
   }

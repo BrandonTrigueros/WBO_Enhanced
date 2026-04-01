@@ -1,5 +1,7 @@
 const fs = require("../util/fs_promises.js"),
+  nodeFs = require("fs"),
   path = require("path"),
+  config = require("../configuration.js"),
   wboPencilPoint =
     require("../../client-data/tools/pencil/wbo_pencil_point.js").wboPencilPoint;
 
@@ -163,6 +165,33 @@ const Tools = {
     const pathstring = "M" + el.x + " " + el.y + "L" + el.x2 + " " + el.y2;
     return renderPath(el, pathstring);
   },
+  /**
+   * @return {string}
+   */
+  Image: function (el) {
+    if (!el.src) return "";
+    var href = el.src;
+    // Try to embed as base64 data URL for self-contained SVG
+    try {
+      var filePath = path.join(config.HISTORY_DIR, el.src.replace(/^\//, ""));
+      if (nodeFs.existsSync(filePath)) {
+        var buf = nodeFs.readFileSync(filePath);
+        var ext = path.extname(filePath).slice(1);
+        var mime = { png: "image/png", jpg: "image/jpeg", gif: "image/gif", webp: "image/webp" }[ext] || "image/png";
+        href = "data:" + mime + ";base64," + buf.toString("base64");
+      }
+    } catch (e) { /* fall back to relative path */ }
+    return (
+      '<image ' +
+      'id="' + htmlspecialchars(el.id) + '" ' +
+      'x="' + (el.x | 0) + '" ' +
+      'y="' + (el.y | 0) + '" ' +
+      'width="' + (el.width | 0) + '" ' +
+      'height="' + (el.height | 0) + '" ' +
+      (el.opacity ? 'opacity="' + parseFloat(el.opacity) + '" ' : '') +
+      'href="' + href + '" ' +
+      'preserveAspectRatio="xMidYMid meet"/>');
+  },
 };
 
 /**
@@ -176,9 +205,14 @@ async function toSVG(obj, writeable) {
   const dim = elems.reduce(
     function (dim, elem) {
       if (elem._children && elem._children.length) elem = elem._children[0];
+      var ex = (elem.x || 0) + (elem.deltax | 0);
+      var ey = (elem.y || 0) + (elem.deltay | 0);
+      // Image elements use x+width/height instead of x2/y2
+      if (elem.width) ex += (elem.width | 0);
+      if (elem.height) ey += (elem.height | 0);
       return [
-        Math.max((elem.x + margin + (elem.deltax | 0)) | 0, dim[0]),
-        Math.max((elem.y + margin + (elem.deltay | 0)) | 0, dim[1]),
+        Math.max((ex + margin) | 0, dim[0]),
+        Math.max((ey + margin) | 0, dim[1]),
       ];
     },
     [margin, margin],

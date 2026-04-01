@@ -1,0 +1,8 @@
+#drawingArea image[data-tool="Image"] {
+  cursor: move;
+}
+
+.image-resize-handle {
+  pointer-events: none;
+  opacity: 0.8;
+}

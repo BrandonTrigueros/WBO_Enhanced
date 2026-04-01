@@ -74,6 +74,8 @@ before(async function () {
     "../../server/configuration.js",
     "../../server/http/router.js",
     "../../server/http/apiRouter.js",
+    "../../server/http/imageRouter.js",
+    "../../server/http/staticMiddleware.js",
     "../../server/export/exportRouter.js",
     "../../server/export/svgRenderer.js",
     "../../server/export/pngRenderer.js",

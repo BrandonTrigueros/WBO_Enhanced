@@ -115,6 +115,40 @@ describe("BoardData", function () {
       board.validate(item);
       assert.equal(item.opacity, undefined);
     });
+
+    it("should clamp width and height to board size", function () {
+      var board = new BoardData("test", storage, {
+        maxChildren: 100,
+        maxItemCount: 1000,
+        maxBoardSize: 500,
+      });
+      var item = { width: 9999, height: -10 };
+      board.validate(item);
+      assert.equal(item.width, 500);
+      assert.equal(item.height, 0);
+    });
+
+    it("should accept valid image src path", function () {
+      var board = new BoardData("test", storage);
+      var item = { src: "/images/testboard/abc123def456.png" };
+      board.validate(item);
+      assert.equal(item.src, "/images/testboard/abc123def456.png");
+    });
+
+    it("should reject invalid src paths", function () {
+      var board = new BoardData("test", storage);
+      var item = { src: "https://evil.com/image.png" };
+      board.validate(item);
+      assert.equal(item.src, undefined, "absolute URL should be rejected");
+
+      item = { src: "/images/../../../etc/passwd" };
+      board.validate(item);
+      assert.equal(item.src, undefined, "path traversal should be rejected");
+
+      item = { src: 12345 };
+      board.validate(item);
+      assert.equal(item.src, undefined, "non-string should be rejected");
+    });
   });
 
   describe("processMessage", function () {
