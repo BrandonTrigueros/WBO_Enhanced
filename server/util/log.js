@@ -1,4 +1,4 @@
-const config = require("./configuration.js"),
+const config = require("../configuration.js"),
   SDC = require("statsd-client");
 
 /**

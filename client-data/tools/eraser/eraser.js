@@ -28,11 +28,16 @@
   //Code isolation
 
   var erasing = false;
+  // Track previous client-space position for sweep interpolation
+  var lastClientX = null,
+    lastClientY = null;
 
   function startErasing(x, y, evt) {
     //Prevent the press from being interpreted by the browser
     evt.preventDefault();
     erasing = true;
+    lastClientX = null;
+    lastClientY = null;
     erase(x, y, evt);
   }
 
@@ -45,28 +50,64 @@
     return Tools.drawingArea.contains(elem);
   }
 
-  function erase(x, y, evt) {
-    // evt.target should be the element over which the mouse is...
-    var target = evt.target;
-    if (evt.type === "touchmove") {
-      // ... the target of touchmove events is the element that was initially touched,
-      // not the one **currently** being touched
-      var touch = evt.touches[0];
-      target = document.elementFromPoint(touch.clientX, touch.clientY);
-    }
+  function eraseAtPoint(cx, cy, alreadyDeleted) {
+    var target = document.elementFromPoint(cx, cy);
     if (
-      erasing &&
+      target &&
       target !== Tools.svg &&
       target !== Tools.drawingArea &&
-      inDrawingArea(target)
+      inDrawingArea(target) &&
+      target.id &&
+      !alreadyDeleted[target.id]
     ) {
+      alreadyDeleted[target.id] = true;
       msg.id = target.id;
       Tools.drawAndSend(msg);
     }
   }
 
+  function erase(x, y, evt) {
+    if (!erasing) return;
+
+    var clientX, clientY;
+    if (evt.type === "touchmove" || evt.type === "touchstart") {
+      var touch = evt.touches[0];
+      clientX = touch.clientX;
+      clientY = touch.clientY;
+    } else {
+      clientX = evt.clientX;
+      clientY = evt.clientY;
+    }
+
+    var deleted = {};
+
+    // Interpolate between last position and current to catch fast strokes
+    if (lastClientX !== null) {
+      var dx = clientX - lastClientX;
+      var dy = clientY - lastClientY;
+      var dist = Math.hypot(dx, dy);
+      // Sample every 3 CSS pixels for reliable hit-testing
+      var steps = Math.max(1, Math.ceil(dist / 3));
+      for (var i = 0; i <= steps; i++) {
+        var t = i / steps;
+        eraseAtPoint(
+          lastClientX + dx * t,
+          lastClientY + dy * t,
+          deleted,
+        );
+      }
+    } else {
+      eraseAtPoint(clientX, clientY, deleted);
+    }
+
+    lastClientX = clientX;
+    lastClientY = clientY;
+  }
+
   function stopErasing() {
     erasing = false;
+    lastClientX = null;
+    lastClientY = null;
   }
 
   function draw(data) {

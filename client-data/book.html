@@ -3,38 +3,45 @@
 
 <head>
 	<meta charset="utf-8" />
-	<title>{{board}} | WBO Enhanced</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>{{bookName}} | WBO Enhanced Notebook</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
 	<link rel="stylesheet" type="text/css" href="../board.css" />
+	<link rel="stylesheet" type="text/css" href="../book.css" />
 	<script src="../socket.io/socket.io.js"></script>
 	<meta name="description" content="{{translations.tagline}}" />
-	<meta name="keywords"
-		content="{{translations.collaborative_whiteboard}},online,draw,paint,shared,realtime,wbo,whitebophir" />
 	<link rel="apple-touch-icon" href="../assets/favicon.svg">
 	<link rel="icon" type="image/x-icon" sizes="16x16" href="../assets/favicon.ico">
-	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
-	<meta property="og:title" content="{{board}} board on WBO" />
-	<meta property="og:url" content="{{baseUrl}}/boards/{{boardUriComponent}}" />
-	<meta property="og:image" content="{{baseUrl}}/preview/{{boardUriComponent}}" />
-	<link rel="canonical" href="{{boardUriComponent}}?lang={{language}}" />
-	{{#languages}}
-	<link rel="alternate" hreflang="{{.}}" href="{{../boardUriComponent}}?lang={{.}}" />
-	{{/languages}}
 	<script src="../polyfill.min.js"></script>
 </head>
 
-<body>
+<body class="book-mode">
 
-	<div id="board">
-		<svg id="canvas" width="500" height="500" version="1.1" xmlns="http://www.w3.org/2000/svg">
-			<defs id="defs"></defs>
-			<g id="drawingArea"></g>
-			<g id="cursors"></g>
-		</svg>
+	<!-- A4 page wrapper — centres and constrains the canvas -->
+	<div id="a4-page-wrapper">
+		<div id="board">
+			<svg id="canvas" width="794" height="1123" version="1.1" xmlns="http://www.w3.org/2000/svg">
+				<defs id="defs"></defs>
+				<g id="drawingArea"></g>
+				<g id="cursors"></g>
+			</svg>
+		</div>
 	</div>
 
 	<div id="loadingMessage">{{translations.loading}}</div>
 
+	<!-- Page navigation bar (top) -->
+	<div id="pageNav">
+		<button id="prevPage" title="Previous page">&#9664;</button>
+		<span id="pageIndicator">
+			<span id="pageNumDisplay">{{currentPage}}</span>
+			/ <span id="pageTotalDisplay">…</span>
+		</span>
+		<button id="nextPage" title="Next page">&#9654;</button>
+		<button id="addPageBtn" title="{{translations.add_page}}">+</button>
+		<button id="deletePageBtn" title="{{translations.delete_page}}">&#128465;</button>
+	</div>
+
+	<!-- Reuse the same floating toolbar from board.css -->
 	<div id="menu" tabindex="0">
 		<div id="menuItems">
 			<ul id="tools" class="tools">
@@ -64,7 +71,8 @@
 				<li class="tool" tabindex="-1">
 					<span class="tool-icon">
 						<svg viewBox="0 0 8 8">
-							<pattern id="opacityPattern" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+							<pattern id="opacityPattern" x="0" y="0" width="4" height="4"
+								patternUnits="userSpaceOnUse">
 								<rect x=0 y=0 width=2 height=2 fill=black></rect>
 								<rect x=2 y=2 width=2 height=2 fill=black></rect>
 								<rect x=2 y=0 width=2 height=2 fill=#eeeeee></rect>
@@ -83,9 +91,12 @@
 		</div>
 	</div>
 
-
+	<!-- Data passed from server -->
 	<script type="application/json" id="translations">{{{ json translations }}}</script>
 	<script type="application/json" id="configuration">{{{ json configuration }}}</script>
+	<script type="application/json" id="bookConfig">{"bookName":"{{bookName}}","bookUriComponent":"{{bookUriComponent}}","currentPage":{{currentPage}} }</script>
+
+	<!-- Shared board engine (drawing, tools, sockets) -->
 	<script src="../js/lib/path-data-polyfill.js"></script>
 	<script src="../js/lib/minitpl.js"></script>
 	<script src="../js/lib/intersect.js"></script>
@@ -109,6 +120,9 @@
 	<script src="../tools/zoom/zoom.js"></script>
 	{{#moderator}}<script src="../tools/clear/clear.js"></script>{{/moderator}}
 	<script src="../js/lib/canvasColor.js"></script>
+
+	<!-- Book-specific: page management (loaded AFTER board.js) -->
+	<script src="../js/book.js"></script>
 </body>
 
 </html>

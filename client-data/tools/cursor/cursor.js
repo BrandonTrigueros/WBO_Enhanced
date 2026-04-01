@@ -107,7 +107,7 @@
     cursor.setAttributeNS(null, "r", 10);
     cursorsElem.appendChild(cursor);
     setTimeout(function () {
-      cursorsElem.removeChild(cursor);
+      if (cursor.parentNode) cursor.parentNode.removeChild(cursor);
     }, CURSOR_DELETE_AFTER_MS);
     return cursor;
   }
@@ -128,5 +128,18 @@
       );
     cursor.setAttributeNS(null, "fill", message.color);
     cursor.setAttributeNS(null, "r", message.size / 2);
+    // Make sure cursor is visible when drawing
+    cursor.classList.remove("cursor-hidden");
   }
+
+  // ---- Hide local cursor when pointer leaves the canvas ----
+  function hideMyCursor() {
+    var cursor = document.getElementById("cursor-me");
+    if (cursor) cursor.classList.add("cursor-hidden");
+  }
+
+  // pointerleave fires when stylus/mouse truly exits the board
+  Tools.board.addEventListener("pointerleave", hideMyCursor);
+  // mouseleave fallback for browsers without pointer events
+  Tools.board.addEventListener("mouseleave", hideMyCursor);
 })();

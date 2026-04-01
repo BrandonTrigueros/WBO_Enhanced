@@ -1,7 +1,7 @@
-const fs = require("./fs_promises.js"),
+const fs = require("../util/fs_promises.js"),
   path = require("path"),
   wboPencilPoint =
-    require("../client-data/tools/pencil/wbo_pencil_point.js").wboPencilPoint;
+    require("../../client-data/tools/pencil/wbo_pencil_point.js").wboPencilPoint;
 
 function htmlspecialchars(str) {
   if (typeof str !== "string") return "";
@@ -214,11 +214,12 @@ async function renderBoard(file, stream) {
 }
 
 if (require.main === module) {
-  const config = require("./configuration.js");
+  const config = require("../configuration.js");
+  // Note: standalone usage still works from export/ folder
   const HISTORY_FILE =
     process.argv[2] || path.join(config.HISTORY_DIR, "board-anonymous.json");
 
   renderBoard(HISTORY_FILE, process.stdout).catch(console.error.bind(console));
 } else {
-  module.exports = { renderBoard: renderBoard };
+  module.exports = { renderBoard: renderBoard, toSVG: toSVG };
 }

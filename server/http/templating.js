@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const url = require("url");
 const accept_language_parser = require("accept-language-parser");
-const client_config = require("./client_configuration");
+const client_config = require("../util/client_configuration");
 
 /**
  * Associations from language to translation dictionnaries
@@ -11,7 +11,7 @@ const client_config = require("./client_configuration");
  * @type {object}
  */
 const TRANSLATIONS = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "translations.json")),
+  fs.readFileSync(path.join(__dirname, "..", "translations.json")),
 );
 const languages = Object.keys(TRANSLATIONS);
 
@@ -91,4 +91,16 @@ class BoardTemplate extends Template {
   }
 }
 
-module.exports = { Template, BoardTemplate };
+class BookTemplate extends Template {
+  parameters(parsedUrl, request, isModerator) {
+    const params = super.parameters(parsedUrl, request, isModerator);
+    const parts = parsedUrl.pathname.split("books/", 2);
+    const bookUriComponent = parts[1];
+    params["bookUriComponent"] = bookUriComponent;
+    params["bookName"] = decodeURIComponent(bookUriComponent);
+    params["currentPage"] = parseInt(parsedUrl.query.page) || 1;
+    return params;
+  }
+}
+
+module.exports = { Template, BoardTemplate, BookTemplate };

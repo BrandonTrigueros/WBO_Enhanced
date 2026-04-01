@@ -57,7 +57,7 @@
 
   function pencilExtrapolatePoints(pts, x, y) {
     //We add the new point, and smoothen the line
-    var ANGULARITY = 3; //The lower this number, the smoother the line
+    var ANGULARITY = 1.8; //The lower this number, the smoother the line
     var prev_values = pts[pts.length - 1].values; // Previous point
     var ante_values = pts[pts.length - 2].values; // Point before the previous one
     var prev_x = prev_values[prev_values.length - 2];

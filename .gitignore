@@ -1,4 +1,4 @@
-node_modules
+node_modules/
 
 lib-cov
 *.seed
@@ -16,11 +16,20 @@ results
 npm-debug.log
 
 .DS_Store
+Thumbs.db
 
 wbo-backup*
 
 # Jetbrains
 .idea/
 
+# VS Code (keep settings.json for shared config)
+.vscode/*
+!.vscode/settings.json
+
 # Nightwatch test results
 tests_output/
+
+# Server data (runtime boards/books)
+server-data/*
+!server-data/.gitignore

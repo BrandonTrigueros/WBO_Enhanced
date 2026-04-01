@@ -25,12 +25,21 @@
  * @module boardData
  */
 
-var fs = require("./fs_promises.js"),
-  log = require("./log.js").log,
-  path = require("path"),
-  config = require("./configuration.js"),
+var log = require("../util/log.js").log,
+  config = require("../configuration.js"),
   Mutex = require("async-mutex").Mutex,
-  jwtauth = require("./jwtBoardnameAuth.js");
+  jwtauth = require("../auth/jwtBoardnameAuth.js"),
+  { BoardStorage } = require("./BoardStorage.js");
+
+// ---- Default storage instance (can be overridden) ----
+var _defaultStorage = new BoardStorage();
+
+// ---- Validation limits (extracted from config for clarity) ----
+var validationLimits = {
+  maxChildren: config.MAX_CHILDREN,
+  maxItemCount: config.MAX_ITEM_COUNT,
+  maxBoardSize: config.MAX_BOARD_SIZE,
+};
 
 /**
  * Represents a board.
@@ -39,15 +48,15 @@ var fs = require("./fs_promises.js"),
 class BoardData {
   /**
    * @param {string} name
+   * @param {object} [storage] - Persistence layer (default: file-system BoardStorage)
+   * @param {object} [limits] - Validation limits override for testing
    */
-  constructor(name) {
+  constructor(name, storage, limits) {
     this.name = name;
     /** @type {{[name: string]: BoardElem}} */
     this.board = {};
-    this.file = path.join(
-      config.HISTORY_DIR,
-      "board-" + encodeURIComponent(name) + ".json",
-    );
+    this.storage = storage || _defaultStorage;
+    this.limits = limits || validationLimits;
     this.lastSaveDate = Date.now();
     this.users = new Set();
     this.saveMutex = new Mutex();
@@ -58,7 +67,6 @@ class BoardData {
    * @param {BoardElem} data
    */
   set(id, data) {
-    //KISS
     data.time = Date.now();
     this.validate(data);
     this.board[id] = data;
@@ -75,7 +83,7 @@ class BoardData {
     if (typeof obj !== "object") return false;
     this.validate(child);
     if (Array.isArray(obj._children)) {
-      if (obj._children.length >= config.MAX_CHILDREN) return false;
+      if (obj._children.length >= this.limits.maxChildren) return false;
       obj._children.push(child);
     } else {
       obj._children = [child];
@@ -126,8 +134,7 @@ class BoardData {
     this.delaySave();
   }
 
-  /** Clear the board of all data
-   */
+  /** Clear the board of all data */
   clear() {
     this.board = {};
     this.delaySave();
@@ -137,19 +144,12 @@ class BoardData {
    * @param {string} id - Identifier of the data to delete.
    */
   delete(id) {
-    //KISS
     delete this.board[id];
     this.delaySave();
   }
 
   /** Process a batch of messages
-   * @typedef {{
-   *  id:string,
-   *  type: "delete" | "update" | "child",
-   *  parent?: string,
-   *  _children?: BoardMessage[],
-   * } & BoardElem } BoardMessage
-   * @param {BoardMessage[]} children array of messages to be delegated to the other methods
+   * @param {BoardMessage[]} children
    */
   processMessageBatch(children) {
     for (const message of children) {
@@ -174,7 +174,6 @@ class BoardData {
         if (id) this.copy(id, message);
         break;
       case "child":
-        // We don't need to store 'type', 'parent', and 'tool' for each child. They will be rehydrated from the parent on the client side
         const { parent, type, tool, ...childData } = message;
         this.addChild(parent, childData);
         break;
@@ -186,21 +185,20 @@ class BoardData {
         }
         break;
       default:
-        //Add data
         if (id) this.set(id, message);
         else console.error("Invalid message: ", message);
     }
   }
 
   /** Reads data from the board
-   * @param {string} id - Identifier of the element to get.
-   * @returns {BoardElem} The element with the given id, or undefined if no element has this id
+   * @param {string} id
+   * @returns {BoardElem}
    */
   get(id) {
     return this.board[id];
   }
 
-  /** Reads data from the board
+  /** Reads all data from the board
    * @param {string} [id] - Identifier of the first element to get.
    * @returns {BoardElem[]}
    */
@@ -220,45 +218,22 @@ class BoardData {
 
   /** Saves the data in the board to a file. */
   async save() {
-    // The mutex prevents multiple save operation to happen simultaneously
     this.saveMutex.runExclusive(this._unsafe_save.bind(this));
   }
 
-  /** Save the board to disk without preventing multiple simultaneaous saves. Use save() instead */
+  /** Save the board to disk. Delegates I/O to storage layer. */
   async _unsafe_save() {
     this.lastSaveDate = Date.now();
     this.clean();
-    var file = this.file;
-    var tmp_file = backupFileName(file);
+    var startTime = Date.now();
+    await this.storage.writeBoard(this.name, this.board);
     var board_txt = JSON.stringify(this.board);
-    if (board_txt === "{}") {
-      // empty board
-      try {
-        await fs.promises.unlink(file);
-        log("removed empty board", { board: this.name });
-      } catch (err) {
-        if (err.code !== "ENOENT") {
-          // If the file already wasn't saved, this is not an error
-          log("board deletion error", { err: err.toString() });
-        }
-      }
-    } else {
-      try {
-        await fs.promises.writeFile(tmp_file, board_txt, { flag: "wx" });
-        await fs.promises.rename(tmp_file, file);
-        log("saved board", {
-          board: this.name,
-          size: board_txt.length,
-          delay_ms: Date.now() - this.lastSaveDate,
-        });
-      } catch (err) {
-        log("board saving error", {
-          board: this.name,
-          err: err.toString(),
-          tmp_file: tmp_file,
-        });
-        return;
-      }
+    if (board_txt !== "{}") {
+      log("saved board", {
+        board: this.name,
+        size: board_txt.length,
+        delay_ms: Date.now() - startTime,
+      });
     }
   }
 
@@ -266,18 +241,18 @@ class BoardData {
   clean() {
     var board = this.board;
     var ids = Object.keys(board);
-    if (ids.length > config.MAX_ITEM_COUNT) {
+    if (ids.length > this.limits.maxItemCount) {
       var toDestroy = ids
         .sort(function (x, y) {
           return (board[x].time | 0) - (board[y].time | 0);
         })
-        .slice(0, -config.MAX_ITEM_COUNT);
+        .slice(0, -this.limits.maxItemCount);
       for (var i = 0; i < toDestroy.length; i++) delete board[toDestroy[i]];
       log("cleaned board", { removed: toDestroy.length, board: this.name });
     }
   }
 
-  /** Reformats an item if necessary in order to make it follow the boards' policy
+  /** Validates and constrains an item to follow the board's policy
    * @param {object} item The object to edit
    */
   validate(item) {
@@ -287,10 +262,10 @@ class BoardData {
     }
     if (item.hasOwnProperty("x") || item.hasOwnProperty("y")) {
       item.x = parseFloat(item.x) || 0;
-      item.x = Math.min(Math.max(item.x, 0), config.MAX_BOARD_SIZE);
+      item.x = Math.min(Math.max(item.x, 0), this.limits.maxBoardSize);
       item.x = Math.round(10 * item.x) / 10;
       item.y = parseFloat(item.y) || 0;
-      item.y = Math.min(Math.max(item.y, 0), config.MAX_BOARD_SIZE);
+      item.y = Math.min(Math.max(item.y, 0), this.limits.maxBoardSize);
       item.y = Math.round(10 * item.y) / 10;
     }
     if (item.hasOwnProperty("opacity")) {
@@ -299,59 +274,38 @@ class BoardData {
     }
     if (item.hasOwnProperty("_children")) {
       if (!Array.isArray(item._children)) item._children = [];
-      if (item._children.length > config.MAX_CHILDREN)
-        item._children.length = config.MAX_CHILDREN;
+      if (item._children.length > this.limits.maxChildren)
+        item._children.length = this.limits.maxChildren;
       for (var i = 0; i < item._children.length; i++) {
         this.validate(item._children[i]);
       }
     }
   }
 
-  /** Load the data in the board from a file.
+  /** Load a board from persistent storage.
    * @param {string} name - name of the board
+   * @param {object} [storage] - optional storage override
    */
-  static async load(name) {
-    var boardData = new BoardData(name),
-      data;
-    try {
-      data = await fs.promises.readFile(boardData.file);
-      boardData.board = JSON.parse(data);
+  static async load(name, storage) {
+    var st = storage || _defaultStorage;
+    var boardData = new BoardData(name, st);
+    var result = await st.readBoard(name);
+
+    boardData.board = result.board;
+
+    if (Object.keys(boardData.board).length > 0) {
       for (const id in boardData.board) boardData.validate(boardData.board[id]);
       log("disk load", { board: boardData.name });
-    } catch (e) {
-      // If the file doesn't exist, this is not an error
-      if (e.code === "ENOENT") {
-        log("empty board creation", { board: boardData.name });
-      } else {
-        log("board load error", {
-          board: name,
-          error: e.toString(),
-          stack: e.stack,
-        });
-      }
-      boardData.board = {};
-      if (data) {
-        // There was an error loading the board, but some data was still read
-        var backup = backupFileName(boardData.file);
-        log("Writing the corrupted file to " + backup);
-        try {
-          await fs.promises.writeFile(backup, data);
-        } catch (err) {
-          log("Error writing " + backup + ": " + err);
-        }
-      }
+    } else if (result.raw) {
+      // Corrupt data — write backup
+      log("board load error", { board: name, error: "corrupt JSON" });
+      await st.writeBackup(name, result.raw);
+    } else {
+      log("empty board creation", { board: boardData.name });
     }
+
     return boardData;
   }
-}
-
-/**
- * Given a board file name, return a name to use for temporary data saving.
- * @param {string} baseName
- */
-function backupFileName(baseName) {
-  var date = new Date().toISOString().replace(/:/g, "");
-  return baseName + "." + date + ".bak";
 }
 
 module.exports.BoardData = BoardData;

@@ -1,4 +1,4 @@
-const config = require("./configuration");
+const config = require("../configuration");
 
 /** Settings that should be handed through to the clients  */
 module.exports = {

@@ -196,7 +196,19 @@
     "text": "Text",
     "tools": "Tools",
     "view_source": "Source code on GitHub",
-    "zoom": "Zoom"
+    "zoom": "Zoom",
+    "create_book": "Create a notebook",
+    "create_random_book": "Create a random notebook",
+    "book_name_placeholder": "Name of the notebook…",
+    "book_description": "A <b>notebook</b> has fixed A4 pages you can add and delete, like a real book. Great for organized notes and tutoring.",
+    "named_book_description": "You can also create a <strong>named notebook</strong> with a custom URL.",
+    "recent_books": "Recent Notebooks",
+    "page": "Page",
+    "add_page": "Add page",
+    "delete_page": "Delete page",
+    "of": "of",
+    "notebook": "Notebook",
+    "confirm_delete_page": "Delete this page? This cannot be undone."
   },
   "es": {
     "board_name_placeholder": "Nombre de la pizarra …",
@@ -235,7 +247,19 @@
     "tools": "Herramientas",
     "view_source": "Código fuente en GitHub",
     "white-out": "Blanqueado",
-    "zoom": "Zoom"
+    "zoom": "Zoom",
+    "create_book": "Crear un cuaderno",
+    "create_random_book": "Crear cuaderno aleatorio",
+    "book_name_placeholder": "Nombre del cuaderno…",
+    "book_description": "Un <b>cuaderno</b> tiene páginas A4 fijas que puedes agregar y eliminar, como un libro real. Ideal para notas organizadas y tutorías.",
+    "named_book_description": "También puedes crear un <strong>cuaderno con nombre</strong> con una URL personalizada.",
+    "recent_books": "Cuadernos recientes",
+    "page": "Página",
+    "add_page": "Agregar página",
+    "delete_page": "Eliminar página",
+    "of": "de",
+    "notebook": "Cuaderno",
+    "confirm_delete_page": "¿Eliminar esta página? Esto no se puede deshacer."
   },
   "fr": {
     "board_name_placeholder": "Nom du tableau…",

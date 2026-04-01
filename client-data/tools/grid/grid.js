@@ -28,7 +28,13 @@
   //Code isolation
 
   var index = 0; //grid off by default
-  var states = ["none", "url(#grid)", "url(#dots)"];
+  var states = [
+    "none",
+    "url(#grid)",
+    "url(#dots)",
+    "url(#narrowRuled)",
+    "url(#wideRuled)",
+  ];
 
   function toggleGrid(evt) {
     index = (index + 1) % states.length;
@@ -91,11 +97,47 @@
         r: "2",
       }),
     );
+    // narrow ruled lines (~6mm spacing)
+    var narrowRuled = Tools.createSVGElement("pattern", {
+      id: "narrowRuled",
+      width: "100",
+      height: "24",
+      patternUnits: "userSpaceOnUse",
+    });
+    narrowRuled.appendChild(
+      Tools.createSVGElement("line", {
+        x1: "0",
+        y1: "24",
+        x2: "100",
+        y2: "24",
+        stroke: "gray",
+        "stroke-width": "0.5",
+      }),
+    );
+    // wide ruled lines (~9mm spacing)
+    var wideRuled = Tools.createSVGElement("pattern", {
+      id: "wideRuled",
+      width: "100",
+      height: "36",
+      patternUnits: "userSpaceOnUse",
+    });
+    wideRuled.appendChild(
+      Tools.createSVGElement("line", {
+        x1: "0",
+        y1: "36",
+        x2: "100",
+        y2: "36",
+        stroke: "gray",
+        "stroke-width": "0.5",
+      }),
+    );
 
     var defs = Tools.svg.getElementById("defs");
     defs.appendChild(smallGrid);
     defs.appendChild(grid);
     defs.appendChild(dots);
+    defs.appendChild(narrowRuled);
+    defs.appendChild(wideRuled);
   }
 
   var gridContainer = (function init() {

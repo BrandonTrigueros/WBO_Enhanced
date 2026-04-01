@@ -24,7 +24,7 @@
  * @licend
  */
 
-((config = require("./configuration.js")),
+((config = require("../configuration.js")),
   (jsonwebtoken = require("jsonwebtoken")));
 
 /**
