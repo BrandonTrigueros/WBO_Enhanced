@@ -87,6 +87,11 @@
 
     //Immediatly add a point to the line
     continueLine(x, y);
+
+    // Shape recognizer: start collecting points
+    if (window.ShapeHoldTrigger && !pencilTool.secondary.active) {
+      ShapeHoldTrigger.onStrokeStart(curLineId);
+    }
   }
 
   function continueLine(x, y, evt) {
@@ -98,6 +103,11 @@
     ) {
       Tools.drawAndSend(new PointMessage(x, y));
       lastTime = performance.now();
+
+      // Shape recognizer: track point
+      if (window.ShapeHoldTrigger) {
+        ShapeHoldTrigger.onStrokePoint(x, y);
+      }
     }
     if (evt) evt.preventDefault();
   }
@@ -109,6 +119,10 @@
   }
 
   function stopLine() {
+    // Shape recognizer: attempt recognition on pen-up
+    if (window.ShapeHoldTrigger) {
+      ShapeHoldTrigger.onStrokeEnd();
+    }
     curLineId = "";
   }
 
