@@ -80,9 +80,16 @@
   /**
    * Switch to a different page.
    * Leaves the current board room, clears local canvas, joins new room.
+   * Fires onBeforeSwitch / onAfterSwitch hooks for extensibility.
    */
+  var pageHooks = { onBeforeSwitch: [], onAfterSwitch: [] };
+
   function switchToPage(page) {
     if (page < 1 || page > pageCount) return;
+
+    // Fire pre-switch hooks (e.g. sidebar refresh of leaving page)
+    pageHooks.onBeforeSwitch.forEach(function (fn) { fn(currentPage, page); });
+
     currentPage = page;
 
     // Clear local drawing
@@ -110,6 +117,9 @@
       url.searchParams.set("page", currentPage);
     }
     window.history.replaceState({}, "", url.toString());
+
+    // Fire post-switch hooks (e.g. sidebar highlight)
+    pageHooks.onAfterSwitch.forEach(function (fn) { fn(currentPage); });
   }
 
   // ---- Event handlers ----
@@ -131,6 +141,7 @@
       if (xhr.status === 200) {
         var meta = JSON.parse(xhr.responseText);
         pageCount = meta.pageCount;
+        if (Tools.pageSidebar) Tools.pageSidebar.rebuild();
         // Navigate to the new page
         switchToPage(pageCount);
       }
@@ -159,6 +170,7 @@
         var result = JSON.parse(xhr.responseText);
         if (result.deleted) {
           pageCount = result.pageCount;
+          if (Tools.pageSidebar) Tools.pageSidebar.rebuild();
           // Stay on same page number, or go back if we deleted the last
           var newPage = Math.min(currentPage, pageCount);
           switchToPage(newPage);
@@ -203,12 +215,30 @@
   }
   saveBookNameToLocalStorage();
 
+  // ---- Wire up Page Sidebar (if present) ----
+  if (Tools.pageSidebar) {
+    Tools.pageSidebar.init({
+      pageBoardName: pageBoardName,
+      getPageCount: function () { return pageCount; },
+      getCurrentPage: function () { return currentPage; },
+      onPageClick: function (num) { switchToPage(num); },
+    });
+
+    pageHooks.onBeforeSwitch.push(function (leavingPage) {
+      Tools.pageSidebar.refreshThumbnail(leavingPage);
+    });
+    pageHooks.onAfterSwitch.push(function () {
+      Tools.pageSidebar.highlightActive();
+    });
+  }
+
   // ---- Initial load ----
   fetchMeta(function () {
     // Ensure currentPage is valid
     if (currentPage > pageCount) currentPage = pageCount;
     if (currentPage < 1) currentPage = 1;
     updateUI();
+    if (Tools.pageSidebar) Tools.pageSidebar.rebuild();
     // Join the correct page board
     switchToPage(currentPage);
   });

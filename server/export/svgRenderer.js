@@ -242,6 +242,10 @@ async function toSVG(obj, writeable) {
 }
 
 async function renderBoard(file, stream) {
+  if (!nodeFs.existsSync(file)) {
+    stream.write('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+    return;
+  }
   const data = await fs.promises.readFile(file);
   var board = JSON.parse(data);
   return toSVG(board, stream);

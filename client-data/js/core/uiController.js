@@ -132,6 +132,35 @@
 
   Tools.colorPresets.forEach(Tools.HTML.addColorButton.bind(Tools.HTML));
 
+  // ── Collapsible Color Palette ──
+  (function initColorPalette() {
+    var toggle = document.getElementById("colorPaletteToggle");
+    var dropdown = document.getElementById("colorPaletteDropdown");
+    if (!toggle || !dropdown) return;
+
+    // Right half of circle: toggle preset dropdown
+    toggle.addEventListener("click", function (e) {
+      e.stopPropagation();
+      dropdown.classList.toggle("hidden");
+    });
+
+    // Close when clicking outside
+    document.addEventListener("click", function (e) {
+      if (!dropdown.classList.contains("hidden") &&
+          !dropdown.contains(e.target) &&
+          !toggle.contains(e.target)) {
+        dropdown.classList.add("hidden");
+      }
+    });
+
+    // Close after selecting a color preset
+    dropdown.addEventListener("click", function (e) {
+      if (e.target.classList.contains("colorPresetButton")) {
+        dropdown.classList.add("hidden");
+      }
+    });
+  })();
+
   // ── Size Chooser ──
   Tools.sizeChangeHandlers = [];
 

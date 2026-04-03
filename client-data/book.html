@@ -16,6 +16,11 @@
 
 <body class="book-mode">
 
+	<!-- Page thumbnail sidebar -->
+	<div id="pageSidebar" class="pageSidebar hidden">
+		<div id="pageSidebarList" class="pageSidebarList"></div>
+	</div>
+
 	<!-- A4 page wrapper — centres and constrains the canvas -->
 	<div id="a4-page-wrapper">
 		<div id="board">
@@ -31,6 +36,7 @@
 
 	<!-- Page navigation bar (top) -->
 	<div id="pageNav">
+		<button id="sidebarToggle" title="Page thumbnails">&#9776;</button>
 		<button id="prevPage" title="Previous page">&#9664;</button>
 		<span id="pageIndicator">
 			<span id="pageNumDisplay">{{currentPage}}</span>
@@ -54,11 +60,14 @@
 
 			<ul class="tools" id="settings">
 				<li class="tool" tabindex="-1">
-					<input class="tool-icon" type="color" id="chooseColor" value="#1913B0" />
+					<input type="color" id="chooseColor" value="#1913B0" />
 					<label class="tool-name" for="chooseColor">{{translations.color}}</label>
-					<span class="colorPresets" id="colorPresetSel">
-						<span class="colorPresetButton"></span>
-					</span>
+					<button type="button" class="paletteBtn" id="colorPaletteToggle" title="Color presets">&#9662;</button>
+					<div class="colorPaletteDropdown hidden" id="colorPaletteDropdown">
+						<span class="colorPresets" id="colorPresetSel">
+							<span class="colorPresetButton"></span>
+						</span>
+					</div>
 				</li>
 				<li class="tool" tabindex="-1"
 					title="{{translations.size}} ({{translations.keyboard_shortcut}}: alt + {{translations.mousewheel}})">
@@ -122,6 +131,8 @@
 	{{#moderator}}<script src="../tools/clear/clear.js"></script>{{/moderator}}
 	<script src="../js/lib/canvasColor.js"></script>
 
+	<!-- Book-specific: page sidebar (loaded BEFORE book.js) -->
+	<script src="../js/pageSidebar.js"></script>
 	<!-- Book-specific: page management (loaded AFTER board.js) -->
 	<script src="../js/book.js"></script>
 </body>

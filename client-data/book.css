@@ -134,3 +134,99 @@ body.book-mode #canvas {
     padding: 0 0 100px;
   }
 }
+
+/* ===================================================
+   PAGE THUMBNAIL SIDEBAR (1.7)
+   =================================================== */
+.pageSidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 180px;
+  height: 100vh;
+  z-index: 900;
+  background: rgba(22, 22, 38, 0.88);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-right: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 4px 0 24px rgba(0,0,0,0.18);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 60px 10px 20px;
+  transition: transform .25s ease;
+}
+.pageSidebar.hidden {
+  transform: translateX(-100%);
+}
+
+/* Scrollbar styling */
+.pageSidebar::-webkit-scrollbar { width: 4px; }
+.pageSidebar::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 2px;
+}
+
+.pageSidebarList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pageThumbnail {
+  cursor: pointer;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: border-color .15s, transform .12s;
+  background: #fff;
+  position: relative;
+}
+.pageThumbnail:hover {
+  border-color: rgba(100,180,255,0.5);
+  transform: scale(1.03);
+}
+.pageThumbnail.active {
+  border-color: rgba(80,170,255,0.8);
+  box-shadow: 0 0 10px rgba(80,170,255,0.3);
+}
+
+.pageThumbnail img {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 794 / 1123;
+  object-fit: contain;
+  background: #fff;
+}
+
+.pageThumbnailLabel {
+  position: absolute;
+  bottom: 4px;
+  right: 6px;
+  font-size: 11px;
+  color: rgba(0,0,0,0.5);
+  font-weight: 600;
+  background: rgba(255,255,255,0.8);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+/* Sidebar toggle button in pageNav */
+#sidebarToggle {
+  font-size: 16px;
+  margin-right: 4px;
+  border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+  padding-right: 8px;
+  border-radius: 8px 0 0 8px;
+}
+
+/* Shift page when sidebar is open */
+body.sidebar-open #a4-page-wrapper {
+  margin-left: 180px;
+  transition: margin-left .25s ease;
+}
+
+@media (max-width: 850px) {
+  .pageSidebar { width: 140px; }
+  body.sidebar-open #a4-page-wrapper { margin-left: 0; }
+}

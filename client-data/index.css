@@ -138,10 +138,12 @@ a {
 }
 
 #recent-boards {
-  box-shadow: 0px 0px 2px black;
   border-radius: 15px;
-  background: linear-gradient(#ccdfdf, #abc6c6);
-  padding: 5px;
+  background: linear-gradient(135deg, rgba(204, 223, 223, 0.6), rgba(171, 198, 198, 0.4));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 10px 12px;
 }
 
 #recent-boards h3 {
@@ -156,43 +158,60 @@ a {
   display: none;
 }
 
-#recent-boards ul {
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-  margin: 0;
-  background: white;
-  padding: 7px;
-  border-radius: 15px;
-  box-shadow: inset 0 0 1px black;
-  max-height: 110px;
-  overflow-y: scroll;
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
 }
 
-#recent-boards li {
-  flex: auto;
-  text-align: center;
-  margin: 3px;
-  display: inline-block;
-  background: #abc6c6;
+.preview-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid transparent;
+  padding: 6px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.preview-card:hover {
+  border-color: #0074d9;
+  box-shadow: 0 2px 8px rgba(0, 116, 217, 0.25);
+}
+
+.preview-card-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
   border-radius: 6px;
-  padding: 2px 8px;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.preview-card-label {
+  margin-top: 4px;
+  font-size: 0.8em;
+  text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 1.5em;
-  line-height: 1.5em;
-  background: linear-gradient(#ccdfdf, #abc6c6);
-  box-shadow: 0px 0px 1px;
   white-space: nowrap;
-}
-
-#recent-boards li a {
-  text-decoration: none;
-}
-
-#recent-boards li a:hover,
-#recent-boards li a:focus {
-  text-decoration: underline;
+  max-width: 100%;
 }
 
 footer {
@@ -352,10 +371,12 @@ footer a:hover {
 }
 
 #recent-books {
-  box-shadow: 0 0 2px black;
   border-radius: 15px;
-  background: linear-gradient(#ddd5f3, #b8a9d9);
-  padding: 5px;
+  background: linear-gradient(135deg, rgba(221, 213, 243, 0.6), rgba(184, 169, 217, 0.4));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 10px 12px;
 }
 #recent-books h3 {
   line-height: 2;
@@ -367,37 +388,12 @@ footer a:hover {
 #recent-books.hidden {
   display: none;
 }
-#recent-books ul {
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-  margin: 0;
-  background: white;
-  padding: 7px;
-  border-radius: 15px;
-  box-shadow: inset 0 0 1px black;
-  max-height: 110px;
-  overflow-y: scroll;
+
+#recent-books .preview-card:hover {
+  border-color: #7c5cbf;
+  box-shadow: 0 2px 8px rgba(124, 92, 191, 0.25);
 }
-#recent-books li {
-  flex: auto;
-  text-align: center;
-  margin: 3px;
-  display: inline-block;
-  border-radius: 6px;
-  padding: 2px 8px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  height: 1.5em;
-  line-height: 1.5em;
-  background: linear-gradient(#ddd5f3, #b8a9d9);
-  box-shadow: 0 0 1px;
-  white-space: nowrap;
-}
-#recent-books li a {
-  text-decoration: none;
-  color: black;
-}
-#recent-books li a:hover {
-  text-decoration: underline;
+
+#recent-books .preview-card-img {
+  aspect-ratio: 794 / 1123;
 }
