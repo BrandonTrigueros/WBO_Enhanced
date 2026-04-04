@@ -43,7 +43,7 @@ class BoardStorage {
   boardFilePath(name) {
     return path.join(
       this.historyDir,
-      "board-" + encodeURIComponent(name) + ".json"
+      "board-" + encodeURIComponent(name) + ".json",
     );
   }
 
@@ -66,7 +66,9 @@ class BoardStorage {
       // File exists but is corrupt — return raw for backup
       if (e instanceof SyntaxError) {
         var raw = null;
-        try { raw = await fs.promises.readFile(file); } catch (_) {}
+        try {
+          raw = await fs.promises.readFile(file);
+        } catch (_) {}
         return { board: {}, raw: raw };
       }
       throw e;

@@ -20,17 +20,20 @@ var ShapeRenderer = (function () {
       var id = Tools.generateUID("s");
       var tool = Tools.list["Straight line"];
       if (!tool) return null;
-      Tools.drawAndSend({
-        type: "straight",
-        id: id,
-        color: color,
-        size: size,
-        opacity: opacity,
-        x: shape.x1,
-        y: shape.y1,
-        x2: shape.x2,
-        y2: shape.y2,
-      }, tool);
+      Tools.drawAndSend(
+        {
+          type: "straight",
+          id: id,
+          color: color,
+          size: size,
+          opacity: opacity,
+          x: shape.x1,
+          y: shape.y1,
+          x2: shape.x2,
+          y2: shape.y2,
+        },
+        tool,
+      );
       return id;
     },
 
@@ -39,19 +42,26 @@ var ShapeRenderer = (function () {
       var tool = Tools.list["Rectangle"];
       if (!tool) return null;
       var v = shape.vertices;
-      var xs = v.map(function (p) { return p.x; });
-      var ys = v.map(function (p) { return p.y; });
-      Tools.drawAndSend({
-        type: "rect",
-        id: id,
-        color: color,
-        size: size,
-        opacity: opacity,
-        x: Math.min.apply(null, xs),
-        y: Math.min.apply(null, ys),
-        x2: Math.max.apply(null, xs),
-        y2: Math.max.apply(null, ys),
-      }, tool);
+      var xs = v.map(function (p) {
+        return p.x;
+      });
+      var ys = v.map(function (p) {
+        return p.y;
+      });
+      Tools.drawAndSend(
+        {
+          type: "rect",
+          id: id,
+          color: color,
+          size: size,
+          opacity: opacity,
+          x: Math.min.apply(null, xs),
+          y: Math.min.apply(null, ys),
+          x2: Math.max.apply(null, xs),
+          y2: Math.max.apply(null, ys),
+        },
+        tool,
+      );
       return id;
     },
 
@@ -59,17 +69,20 @@ var ShapeRenderer = (function () {
       var id = Tools.generateUID("e");
       var tool = Tools.list["Ellipse"];
       if (!tool) return null;
-      Tools.drawAndSend({
-        type: "ellipse",
-        id: id,
-        color: color,
-        size: size,
-        opacity: opacity,
-        x: shape.cx - shape.r,
-        y: shape.cy - shape.r,
-        x2: shape.cx + shape.r,
-        y2: shape.cy + shape.r,
-      }, tool);
+      Tools.drawAndSend(
+        {
+          type: "ellipse",
+          id: id,
+          color: color,
+          size: size,
+          opacity: opacity,
+          x: shape.cx - shape.r,
+          y: shape.cy - shape.r,
+          x2: shape.cx + shape.r,
+          y2: shape.cy + shape.r,
+        },
+        tool,
+      );
       return id;
     },
 
@@ -81,17 +94,20 @@ var ShapeRenderer = (function () {
       for (var i = 0; i < 3; i++) {
         var id = Tools.generateUID("s");
         if (i === 0) firstId = id;
-        Tools.drawAndSend({
-          type: "straight",
-          id: id,
-          color: color,
-          size: size,
-          opacity: opacity,
-          x: verts[i].x,
-          y: verts[i].y,
-          x2: verts[i + 1].x,
-          y2: verts[i + 1].y,
-        }, tool);
+        Tools.drawAndSend(
+          {
+            type: "straight",
+            id: id,
+            color: color,
+            size: size,
+            opacity: opacity,
+            x: verts[i].x,
+            y: verts[i].y,
+            x2: verts[i + 1].x,
+            y2: verts[i + 1].y,
+          },
+          tool,
+        );
       }
       return firstId;
     },
@@ -132,7 +148,9 @@ var ShapeRenderer = (function () {
           el.style.filter = "drop-shadow(0 0 6px rgba(0,116,217,0.6))";
           setTimeout(function () {
             el.style.filter = "";
-            setTimeout(function () { el.style.transition = ""; }, 300);
+            setTimeout(function () {
+              el.style.transition = "";
+            }, 300);
           }, 400);
         }
       }, 50);

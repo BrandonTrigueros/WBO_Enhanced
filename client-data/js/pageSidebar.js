@@ -13,9 +13,9 @@
 
   var config = {
     pageBoardName: null, // function(pageNum) → board name string
-    getPageCount: null,  // function() → number
+    getPageCount: null, // function() → number
     getCurrentPage: null, // function() → number
-    onPageClick: null,   // function(pageNum)
+    onPageClick: null, // function(pageNum)
   };
 
   function buildThumbnails() {
@@ -29,7 +29,8 @@
 
   function createThumbnail(pageNum, currentPage) {
     var div = document.createElement("div");
-    div.className = "pageThumbnail" + (pageNum === currentPage ? " active" : "");
+    div.className =
+      "pageThumbnail" + (pageNum === currentPage ? " active" : "");
     div.dataset.page = pageNum;
 
     var img = document.createElement("img");
@@ -37,7 +38,9 @@
     img.src = "/preview/" + encodeURIComponent(boardName);
     img.alt = "Page " + pageNum;
     img.loading = "lazy";
-    img.onerror = function () { img.style.display = "none"; };
+    img.onerror = function () {
+      img.style.display = "none";
+    };
     div.appendChild(img);
 
     var label = document.createElement("span");
@@ -56,15 +59,21 @@
     var currentPage = config.getCurrentPage();
     var thumbs = sidebarList.querySelectorAll(".pageThumbnail");
     for (var i = 0; i < thumbs.length; i++) {
-      thumbs[i].classList.toggle("active", parseInt(thumbs[i].dataset.page) === currentPage);
+      thumbs[i].classList.toggle(
+        "active",
+        parseInt(thumbs[i].dataset.page) === currentPage,
+      );
     }
   }
 
   function refreshThumbnail(pageNum) {
-    var img = sidebarList.querySelector('.pageThumbnail[data-page="' + pageNum + '"] img');
+    var img = sidebarList.querySelector(
+      '.pageThumbnail[data-page="' + pageNum + '"] img',
+    );
     if (img) {
       var boardName = config.pageBoardName(pageNum);
-      img.src = "/preview/" + encodeURIComponent(boardName) + "?t=" + Date.now();
+      img.src =
+        "/preview/" + encodeURIComponent(boardName) + "?t=" + Date.now();
     }
   }
 

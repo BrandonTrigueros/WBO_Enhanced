@@ -177,20 +177,41 @@ const Tools = {
       if (nodeFs.existsSync(filePath)) {
         var buf = nodeFs.readFileSync(filePath);
         var ext = path.extname(filePath).slice(1);
-        var mime = { png: "image/png", jpg: "image/jpeg", gif: "image/gif", webp: "image/webp" }[ext] || "image/png";
+        var mime =
+          {
+            png: "image/png",
+            jpg: "image/jpeg",
+            gif: "image/gif",
+            webp: "image/webp",
+          }[ext] || "image/png";
         href = "data:" + mime + ";base64," + buf.toString("base64");
       }
-    } catch (e) { /* fall back to relative path */ }
+    } catch (e) {
+      /* fall back to relative path */
+    }
     return (
-      '<image ' +
-      'id="' + htmlspecialchars(el.id) + '" ' +
-      'x="' + (el.x | 0) + '" ' +
-      'y="' + (el.y | 0) + '" ' +
-      'width="' + (el.width | 0) + '" ' +
-      'height="' + (el.height | 0) + '" ' +
-      (el.opacity ? 'opacity="' + parseFloat(el.opacity) + '" ' : '') +
-      'href="' + href + '" ' +
-      'preserveAspectRatio="xMidYMid meet"/>');
+      "<image " +
+      'id="' +
+      htmlspecialchars(el.id) +
+      '" ' +
+      'x="' +
+      (el.x | 0) +
+      '" ' +
+      'y="' +
+      (el.y | 0) +
+      '" ' +
+      'width="' +
+      (el.width | 0) +
+      '" ' +
+      'height="' +
+      (el.height | 0) +
+      '" ' +
+      (el.opacity ? 'opacity="' + parseFloat(el.opacity) + '" ' : "") +
+      'href="' +
+      href +
+      '" ' +
+      'preserveAspectRatio="xMidYMid meet"/>'
+    );
   },
 };
 
@@ -208,8 +229,8 @@ async function toSVG(obj, writeable) {
       var ex = (elem.x || 0) + (elem.deltax | 0);
       var ey = (elem.y || 0) + (elem.deltay | 0);
       // Image elements use x+width/height instead of x2/y2
-      if (elem.width) ex += (elem.width | 0);
-      if (elem.height) ey += (elem.height | 0);
+      if (elem.width) ex += elem.width | 0;
+      if (elem.height) ey += elem.height | 0;
       return [
         Math.max((ex + margin) | 0, dim[0]),
         Math.max((ey + margin) | 0, dim[1]),

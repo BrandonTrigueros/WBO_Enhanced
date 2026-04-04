@@ -33,9 +33,10 @@ function addWhiteBackground(svgString) {
 function svgToPng(svgString, opts) {
   var withBg = addWhiteBackground(svgString);
   var resvgOpts = {
-    fitTo: opts && opts.width
-      ? { mode: "width", value: opts.width }
-      : { mode: "original" },
+    fitTo:
+      opts && opts.width
+        ? { mode: "width", value: opts.width }
+        : { mode: "original" },
   };
   var resvg = new Resvg(withBg, resvgOpts);
   var pngData = resvg.render();

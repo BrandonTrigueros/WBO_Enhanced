@@ -167,7 +167,12 @@
     var ih = parseFloat(img.getAttribute("height")) || 0;
     var hs = HANDLE_SIZE / Tools.getScale();
     // Bottom-right corner
-    return x >= ix + iw - hs && x <= ix + iw + hs && y >= iy + ih - hs && y <= iy + ih + hs;
+    return (
+      x >= ix + iw - hs &&
+      x <= ix + iw + hs &&
+      y >= iy + ih - hs &&
+      y <= iy + ih + hs
+    );
   }
 
   // ---- Tool listeners ----

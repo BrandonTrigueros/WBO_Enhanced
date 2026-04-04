@@ -32,7 +32,9 @@ function request(method, urlPath, body, headers) {
     };
     var req = http.request(opts, function (res) {
       var chunks = [];
-      res.on("data", function (chunk) { chunks.push(chunk); });
+      res.on("data", function (chunk) {
+        chunks.push(chunk);
+      });
       res.on("end", function () {
         resolve({
           statusCode: res.statusCode,
@@ -84,7 +86,9 @@ before(async function () {
   });
 
   server = require("../../server/server.js");
-  await new Promise(function (r) { setTimeout(r, 500); });
+  await new Promise(function (r) {
+    setTimeout(r, 500);
+  });
 });
 
 after(function (_, done) {
@@ -104,9 +108,14 @@ describe("Image upload API", function () {
 
   describe("POST /api/boards/{name}/images", function () {
     it("should upload a valid PNG and return path", async function () {
-      var res = await request("POST", "/api/boards/testboard/images", VALID_PNG, {
-        "Content-Type": "image/png",
-      });
+      var res = await request(
+        "POST",
+        "/api/boards/testboard/images",
+        VALID_PNG,
+        {
+          "Content-Type": "image/png",
+        },
+      );
       assert.equal(res.statusCode, 201);
       var body = JSON.parse(res.body.toString());
       assert.ok(body.path.startsWith("/images/testboard/"));
@@ -115,27 +124,42 @@ describe("Image upload API", function () {
     });
 
     it("should deduplicate identical uploads (200 not 201)", async function () {
-      var res = await request("POST", "/api/boards/testboard/images", VALID_PNG, {
-        "Content-Type": "image/png",
-      });
+      var res = await request(
+        "POST",
+        "/api/boards/testboard/images",
+        VALID_PNG,
+        {
+          "Content-Type": "image/png",
+        },
+      );
       assert.equal(res.statusCode, 200);
       var body = JSON.parse(res.body.toString());
       assert.equal(body.path, uploadedPath);
     });
 
     it("should reject unsupported content type", async function () {
-      var res = await request("POST", "/api/boards/testboard/images", Buffer.from("hello"), {
-        "Content-Type": "text/plain",
-      });
+      var res = await request(
+        "POST",
+        "/api/boards/testboard/images",
+        Buffer.from("hello"),
+        {
+          "Content-Type": "text/plain",
+        },
+      );
       assert.equal(res.statusCode, 400);
     });
 
     it("should reject mismatched magic bytes", async function () {
       // Send GIF header with PNG content type
       var fakeBody = Buffer.from("GIF89a\x01\x00\x01\x00", "binary");
-      var res = await request("POST", "/api/boards/testboard/images", fakeBody, {
-        "Content-Type": "image/png",
-      });
+      var res = await request(
+        "POST",
+        "/api/boards/testboard/images",
+        fakeBody,
+        {
+          "Content-Type": "image/png",
+        },
+      );
       assert.equal(res.statusCode, 400);
     });
   });
@@ -143,9 +167,14 @@ describe("Image upload API", function () {
   describe("GET /images/{boardName}/{filename}", function () {
     it("should serve the uploaded image", async function () {
       // First upload
-      var upRes = await request("POST", "/api/boards/testboard/images", VALID_PNG, {
-        "Content-Type": "image/png",
-      });
+      var upRes = await request(
+        "POST",
+        "/api/boards/testboard/images",
+        VALID_PNG,
+        {
+          "Content-Type": "image/png",
+        },
+      );
       var imgPath = JSON.parse(upRes.body.toString()).path;
 
       // Then fetch
@@ -166,7 +195,10 @@ describe("Image upload API", function () {
     it("should reject path traversal attempt", async function () {
       var res = await request("GET", "/images/../../../etc/passwd");
       // Path gets normalized by URL parser; handler returns 400 or router returns 404
-      assert.ok(res.statusCode === 400 || res.statusCode === 404, "should not serve file");
+      assert.ok(
+        res.statusCode === 400 || res.statusCode === 404,
+        "should not serve file",
+      );
     });
   });
 });

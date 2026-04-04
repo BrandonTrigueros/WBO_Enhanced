@@ -57,14 +57,14 @@ body.book-mode #canvas {
   background: rgba(22, 22, 38, 0.72);
   backdrop-filter: blur(22px) saturate(170%);
   -webkit-backdrop-filter: blur(22px) saturate(170%);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
   padding: 4px 14px;
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.18),
     inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   color: #fff;
-  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
   font-size: 14px;
   user-select: none;
 }
@@ -148,21 +148,23 @@ body.book-mode #canvas {
   background: rgba(22, 22, 38, 0.88);
   backdrop-filter: blur(18px) saturate(160%);
   -webkit-backdrop-filter: blur(18px) saturate(160%);
-  border-right: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 4px 0 24px rgba(0,0,0,0.18);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
   overflow-y: auto;
   overflow-x: hidden;
   padding: 60px 10px 20px;
-  transition: transform .25s ease;
+  transition: transform 0.25s ease;
 }
 .pageSidebar.hidden {
   transform: translateX(-100%);
 }
 
 /* Scrollbar styling */
-.pageSidebar::-webkit-scrollbar { width: 4px; }
+.pageSidebar::-webkit-scrollbar {
+  width: 4px;
+}
 .pageSidebar::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 2px;
 }
 
@@ -177,17 +179,19 @@ body.book-mode #canvas {
   border-radius: 6px;
   overflow: hidden;
   border: 2px solid transparent;
-  transition: border-color .15s, transform .12s;
+  transition:
+    border-color 0.15s,
+    transform 0.12s;
   background: #fff;
   position: relative;
 }
 .pageThumbnail:hover {
-  border-color: rgba(100,180,255,0.5);
+  border-color: rgba(100, 180, 255, 0.5);
   transform: scale(1.03);
 }
 .pageThumbnail.active {
-  border-color: rgba(80,170,255,0.8);
-  box-shadow: 0 0 10px rgba(80,170,255,0.3);
+  border-color: rgba(80, 170, 255, 0.8);
+  box-shadow: 0 0 10px rgba(80, 170, 255, 0.3);
 }
 
 .pageThumbnail img {
@@ -204,9 +208,9 @@ body.book-mode #canvas {
   bottom: 4px;
   right: 6px;
   font-size: 11px;
-  color: rgba(0,0,0,0.5);
+  color: rgba(0, 0, 0, 0.5);
   font-weight: 600;
-  background: rgba(255,255,255,0.8);
+  background: rgba(255, 255, 255, 0.8);
   border-radius: 3px;
   padding: 1px 5px;
 }
@@ -223,10 +227,14 @@ body.book-mode #canvas {
 /* Shift page when sidebar is open */
 body.sidebar-open #a4-page-wrapper {
   margin-left: 180px;
-  transition: margin-left .25s ease;
+  transition: margin-left 0.25s ease;
 }
 
 @media (max-width: 850px) {
-  .pageSidebar { width: 140px; }
-  body.sidebar-open #a4-page-wrapper { margin-left: 0; }
+  .pageSidebar {
+    width: 140px;
+  }
+  body.sidebar-open #a4-page-wrapper {
+    margin-left: 0;
+  }
 }

@@ -47,11 +47,16 @@ function handleImageUpload(boardName, request, response) {
     return;
   }
 
-  var contentType = (request.headers["content-type"] || "").split(";")[0].trim().toLowerCase();
+  var contentType = (request.headers["content-type"] || "")
+    .split(";")[0]
+    .trim()
+    .toLowerCase();
   var ext = MIME_TO_EXT[contentType];
   if (!ext) {
     sendJson(response, 400, {
-      error: "Unsupported image type. Allowed: " + config.ALLOWED_IMAGE_TYPES.join(", "),
+      error:
+        "Unsupported image type. Allowed: " +
+        config.ALLOWED_IMAGE_TYPES.join(", "),
     });
     return;
   }
@@ -64,7 +69,10 @@ function handleImageUpload(boardName, request, response) {
     if (totalSize > config.MAX_IMAGE_SIZE) {
       request.destroy();
       sendJson(response, 413, {
-        error: "Image too large. Maximum: " + (config.MAX_IMAGE_SIZE / 1024 / 1024) + " MB",
+        error:
+          "Image too large. Maximum: " +
+          config.MAX_IMAGE_SIZE / 1024 / 1024 +
+          " MB",
       });
       return;
     }
@@ -82,11 +90,17 @@ function handleImageUpload(boardName, request, response) {
 
     // Verify magic bytes match claimed content type
     if (!validateMagicBytes(buffer, contentType)) {
-      sendJson(response, 400, { error: "File content does not match Content-Type" });
+      sendJson(response, 400, {
+        error: "File content does not match Content-Type",
+      });
       return;
     }
 
-    var hash = crypto.createHash("sha256").update(buffer).digest("hex").slice(0, 16);
+    var hash = crypto
+      .createHash("sha256")
+      .update(buffer)
+      .digest("hex")
+      .slice(0, 16);
     var filename = hash + "." + ext;
     var dir = ensureImageDir(boardName);
     var filePath = path.join(dir, filename);
@@ -94,7 +108,11 @@ function handleImageUpload(boardName, request, response) {
     // If file already exists (same content), skip write
     if (fs.existsSync(filePath)) {
       var imagePath = "/images/" + boardName + "/" + filename;
-      log("image upload (dedup)", { board: boardName, file: filename, size: totalSize });
+      log("image upload (dedup)", {
+        board: boardName,
+        file: filename,
+        size: totalSize,
+      });
       sendJson(response, 200, { path: imagePath });
       return;
     }
@@ -106,7 +124,11 @@ function handleImageUpload(boardName, request, response) {
         return;
       }
       var imagePath = "/images/" + boardName + "/" + filename;
-      log("image upload", { board: boardName, file: filename, size: totalSize });
+      log("image upload", {
+        board: boardName,
+        file: filename,
+        size: totalSize,
+      });
       sendJson(response, 201, { path: imagePath });
     });
   });
@@ -136,7 +158,10 @@ function handleImageServe(parts, request, response) {
   var filename = parts[2];
 
   // Validate: no path traversal, only hash.ext pattern
-  if (!/^[\w%\-_~()]+$/.test(boardName) || !/^[a-f0-9]+\.(png|jpg|gif|webp)$/.test(filename)) {
+  if (
+    !/^[\w%\-_~()]+$/.test(boardName) ||
+    !/^[a-f0-9]+\.(png|jpg|gif|webp)$/.test(filename)
+  ) {
     response.writeHead(400);
     response.end("Invalid path");
     return;
@@ -152,7 +177,12 @@ function handleImageServe(parts, request, response) {
     }
 
     var ext = path.extname(filename).slice(1);
-    var mimeTypes = { png: "image/png", jpg: "image/jpeg", gif: "image/gif", webp: "image/webp" };
+    var mimeTypes = {
+      png: "image/png",
+      jpg: "image/jpeg",
+      gif: "image/gif",
+      webp: "image/webp",
+    };
 
     response.writeHead(200, {
       "Content-Type": mimeTypes[ext] || "application/octet-stream",
@@ -186,15 +216,28 @@ function validateMagicBytes(buffer, mime) {
   if (buffer.length < 4) return false;
   switch (mime) {
     case "image/png":
-      return buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47;
+      return (
+        buffer[0] === 0x89 &&
+        buffer[1] === 0x50 &&
+        buffer[2] === 0x4e &&
+        buffer[3] === 0x47
+      );
     case "image/jpeg":
       return buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
     case "image/gif":
       return buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46;
     case "image/webp":
-      return buffer.length >= 12 &&
-        buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
-        buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50;
+      return (
+        buffer.length >= 12 &&
+        buffer[0] === 0x52 &&
+        buffer[1] === 0x49 &&
+        buffer[2] === 0x46 &&
+        buffer[3] === 0x46 &&
+        buffer[8] === 0x57 &&
+        buffer[9] === 0x45 &&
+        buffer[10] === 0x42 &&
+        buffer[11] === 0x50
+      );
     default:
       return false;
   }

@@ -22,7 +22,9 @@ function request(method, urlPath) {
       { hostname: "127.0.0.1", port: PORT, path: urlPath, method: method },
       function (res) {
         var chunks = [];
-        res.on("data", function (chunk) { chunks.push(chunk); });
+        res.on("data", function (chunk) {
+          chunks.push(chunk);
+        });
         res.on("end", function () {
           resolve({
             statusCode: res.statusCode,
@@ -44,8 +46,25 @@ before(async function () {
 
   // Seed a board
   var boardData = {
-    r1: { id: "r1", x: 50, y: 50, x2: 300, y2: 200, tool: "Rectangle", color: "#ff0000", size: 3 },
-    t1: { id: "t1", x: 100, y: 100, tool: "Text", txt: "Test", color: "#000", size: 12 },
+    r1: {
+      id: "r1",
+      x: 50,
+      y: 50,
+      x2: 300,
+      y2: 200,
+      tool: "Rectangle",
+      color: "#ff0000",
+      size: 3,
+    },
+    t1: {
+      id: "t1",
+      x: 100,
+      y: 100,
+      tool: "Text",
+      txt: "Test",
+      color: "#000",
+      size: 12,
+    },
   };
   fs.writeFileSync(
     path.join(dataDir, "board-testboard.json"),
@@ -53,8 +72,29 @@ before(async function () {
   );
 
   // Seed a 2-page book
-  var page1 = { p1: { id: "p1", x: 10, y: 10, x2: 400, y2: 300, tool: "Rectangle", color: "#00f", size: 2 } };
-  var page2 = { p2: { id: "p2", x: 50, y: 80, tool: "Text", txt: "Page 2", color: "#333", size: 16 } };
+  var page1 = {
+    p1: {
+      id: "p1",
+      x: 10,
+      y: 10,
+      x2: 400,
+      y2: 300,
+      tool: "Rectangle",
+      color: "#00f",
+      size: 2,
+    },
+  };
+  var page2 = {
+    p2: {
+      id: "p2",
+      x: 50,
+      y: 80,
+      tool: "Text",
+      txt: "Page 2",
+      color: "#333",
+      size: 16,
+    },
+  };
   fs.writeFileSync(
     path.join(dataDir, "board-book~testbook~p1.json"),
     JSON.stringify(page1),
@@ -94,7 +134,9 @@ before(async function () {
   });
 
   server = require("../../server/server.js");
-  await new Promise(function (r) { setTimeout(r, 500); });
+  await new Promise(function (r) {
+    setTimeout(r, 500);
+  });
 });
 
 after(function (_, done) {

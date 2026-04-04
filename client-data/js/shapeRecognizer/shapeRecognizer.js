@@ -15,7 +15,8 @@ var ShapeRecognizer = (function () {
   var C = ShapeRecConfig;
 
   function dist2(p, q) {
-    var dx = p.x - q.x, dy = p.y - q.y;
+    var dx = p.x - q.x,
+      dy = p.y - q.y;
     return dx * dx + dy * dy;
   }
 
@@ -35,8 +36,8 @@ var ShapeRecognizer = (function () {
 
     // look for a linear piece that's big enough
     for (k = 0; k < nsides; k++) {
-      i1 = start + Math.floor(k * (finish - start) / nsides);
-      i2 = start + Math.floor((k + 1) * (finish - start) / nsides);
+      i1 = start + Math.floor((k * (finish - start)) / nsides);
+      i2 = start + Math.floor(((k + 1) * (finish - start)) / nsides);
       s.calc(points, i1, i2);
       if (s.det() < C.SEGMENT_MAX_DET) break;
     }
@@ -71,8 +72,14 @@ var ShapeRecognizer = (function () {
     // recurse on left remainder
     var n1 = 0;
     if (i1 > start) {
-      n1 = findPolygonal(points, start, i1,
-        (i2 === finish) ? (nsides - 1) : (nsides - 2), breaks, ss);
+      n1 = findPolygonal(
+        points,
+        start,
+        i1,
+        i2 === finish ? nsides - 1 : nsides - 2,
+        breaks,
+        ss,
+      );
       if (n1 === 0) return 0;
     }
 
@@ -86,7 +93,14 @@ var ShapeRecognizer = (function () {
       // Use offset arrays for right side
       var rightBreaks = [];
       var rightSS = [];
-      n2 = findPolygonal(points, i2, finish, nsides - n1 - 1, rightBreaks, rightSS);
+      n2 = findPolygonal(
+        points,
+        i2,
+        finish,
+        nsides - n1 - 1,
+        rightBreaks,
+        rightSS,
+      );
       if (n2 === 0) return 0;
       for (var j = 0; j <= n2; j++) {
         breaks[n1 + 1 + j] = rightBreaks[j];
@@ -147,9 +161,12 @@ var ShapeRecognizer = (function () {
 
     // Orient segments so each points toward the next
     for (var i = 0; i < 3; i++) {
-      var r1 = rs[i], r2 = rs[(i + 1) % 3];
-      var P = { x: r1.x1, y: r1.y1 }, Q = { x: r1.x2, y: r1.y2 };
-      var R = { x: r2.x1, y: r2.y1 }, S = { x: r2.x2, y: r2.y2 };
+      var r1 = rs[i],
+        r2 = rs[(i + 1) % 3];
+      var P = { x: r1.x1, y: r1.y1 },
+        Q = { x: r1.x2, y: r1.y2 };
+      var R = { x: r2.x1, y: r2.y1 },
+        S = { x: r2.x2, y: r2.y2 };
       var minPR_PS = Math.min(dist2(P, R), dist2(P, S));
       var minQR_QS = Math.min(dist2(Q, R), dist2(Q, S));
       r1.reversed = minPR_PS < minQR_QS;
@@ -157,13 +174,15 @@ var ShapeRecognizer = (function () {
 
     // Check vertex gaps
     for (var i = 0; i < 3; i++) {
-      var r1 = rs[i], r2 = rs[(i + 1) % 3];
+      var r1 = rs[i],
+        r2 = rs[(i + 1) % 3];
       var ex = r1.reversed ? r1.x1 : r1.x2;
       var ey = r1.reversed ? r1.y1 : r1.y2;
       var sx = r2.reversed ? r2.x2 : r2.x1;
       var sy = r2.reversed ? r2.y2 : r2.y1;
       var d = Math.hypot(ex - sx, ey - sy);
-      if (d > C.TRIANGLE_LINEAR_TOLERANCE * (r1.radius + r2.radius)) return null;
+      if (d > C.TRIANGLE_LINEAR_TOLERANCE * (r1.radius + r2.radius))
+        return null;
     }
 
     var vertices = [];
@@ -182,38 +201,47 @@ var ShapeRecognizer = (function () {
 
     var avgAngle = 0;
     for (var i = 0; i < 4; i++) {
-      var r1 = rs[i], r2 = rs[(i + 1) % 4];
-      if (Math.abs(Math.abs(r1.angle - r2.angle) - Math.PI / 2) > C.RECTANGLE_ANGLE_TOLERANCE) {
+      var r1 = rs[i],
+        r2 = rs[(i + 1) % 4];
+      if (
+        Math.abs(Math.abs(r1.angle - r2.angle) - Math.PI / 2) >
+        C.RECTANGLE_ANGLE_TOLERANCE
+      ) {
         return null;
       }
       avgAngle += r1.angle;
       if (r2.angle > r1.angle) {
-        avgAngle += (i + 1) * Math.PI / 2;
+        avgAngle += ((i + 1) * Math.PI) / 2;
       } else {
-        avgAngle -= (i + 1) * Math.PI / 2;
+        avgAngle -= ((i + 1) * Math.PI) / 2;
       }
 
-      r1.reversed = ((r1.x2 - r1.x1) * (r2.xcenter - r1.xcenter) +
-                      (r1.y2 - r1.y1) * (r2.ycenter - r1.ycenter)) < 0;
+      r1.reversed =
+        (r1.x2 - r1.x1) * (r2.xcenter - r1.xcenter) +
+          (r1.y2 - r1.y1) * (r2.ycenter - r1.ycenter) <
+        0;
     }
 
     // Check vertex gaps
     for (var i = 0; i < 4; i++) {
-      var r1 = rs[i], r2 = rs[(i + 1) % 4];
+      var r1 = rs[i],
+        r2 = rs[(i + 1) % 4];
       var d = Math.hypot(
         (r1.reversed ? r1.x1 : r1.x2) - (r2.reversed ? r2.x2 : r2.x1),
-        (r1.reversed ? r1.y1 : r1.y2) - (r2.reversed ? r2.y2 : r2.y1)
+        (r1.reversed ? r1.y1 : r1.y2) - (r2.reversed ? r2.y2 : r2.y1),
       );
-      if (d > C.RECTANGLE_LINEAR_TOLERANCE * (r1.radius + r2.radius)) return null;
+      if (d > C.RECTANGLE_LINEAR_TOLERANCE * (r1.radius + r2.radius))
+        return null;
     }
 
     avgAngle /= 4;
     if (Math.abs(avgAngle) < C.SLANT_TOLERANCE) avgAngle = 0;
-    if (Math.abs(avgAngle) > Math.PI / 2 - C.SLANT_TOLERANCE) avgAngle = Math.PI / 2;
+    if (Math.abs(avgAngle) > Math.PI / 2 - C.SLANT_TOLERANCE)
+      avgAngle = Math.PI / 2;
 
     // Reassign snapped angles
     for (var i = 0; i < 4; i++) {
-      rs[i].angle = avgAngle + i * Math.PI / 2;
+      rs[i].angle = avgAngle + (i * Math.PI) / 2;
     }
 
     var vertices = [];
@@ -239,7 +267,10 @@ var ShapeRecognizer = (function () {
     if (!points || points.length < 3) return null;
 
     // Size check
-    var minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    var minX = Infinity,
+      maxX = -Infinity,
+      minY = Infinity,
+      maxY = -Infinity;
     for (var i = 0; i < points.length; i++) {
       if (points[i].x < minX) minX = points[i].x;
       if (points[i].x > maxX) maxX = points[i].x;
@@ -251,7 +282,14 @@ var ShapeRecognizer = (function () {
     var ss = new Array(C.MAX_POLYGON_SIDES);
     var brk = new Array(C.MAX_POLYGON_SIDES + 1);
 
-    var n = findPolygonal(points, 0, points.length - 1, C.MAX_POLYGON_SIDES, brk, ss);
+    var n = findPolygonal(
+      points,
+      0,
+      points.length - 1,
+      C.MAX_POLYGON_SIDES,
+      brk,
+      ss,
+    );
 
     if (n > 0) {
       optimizePolygonal(points, n, brk, ss);
@@ -283,7 +321,7 @@ var ShapeRecognizer = (function () {
           rs.angle = 0;
           rs.y1 = rs.y2 = rs.ycenter;
         } else if (Math.abs(rs.angle) > Math.PI / 2 - C.SLANT_TOLERANCE) {
-          rs.angle = (rs.angle > 0) ? Math.PI / 2 : -Math.PI / 2;
+          rs.angle = rs.angle > 0 ? Math.PI / 2 : -Math.PI / 2;
           rs.x1 = rs.x2 = rs.xcenter;
         } else {
           aligned = false;
@@ -295,15 +333,23 @@ var ShapeRecognizer = (function () {
 
         // Check if endpoints are close to the principal-axis endpoints
         var last = points[points.length - 1];
-        var P = { x: rs.x1, y: rs.y1 }, Q = { x: rs.x2, y: rs.y2 };
-        var dx = Q.x - P.x, dy = Q.y - P.y;
+        var P = { x: rs.x1, y: rs.y1 },
+          Q = { x: rs.x2, y: rs.y2 };
+        var dx = Q.x - P.x,
+          dy = Q.y - P.y;
         var num = dy * last.x - dx * last.y + Q.x * P.y - Q.y * P.x;
         var ptDist2 = (num * num) / (dy * dy + dx * dx);
 
         if (ptDist2 < C.LINE_POINT_DIST2_THRESHOLD) {
           return { type: "line", x1: rs.x1, y1: rs.y1, x2: rs.x2, y2: rs.y2 };
         } else {
-          return { type: "line", x1: points[0].x, y1: points[0].y, x2: last.x, y2: last.y };
+          return {
+            type: "line",
+            x1: points[0].x,
+            y1: points[0].y,
+            x2: last.x,
+            y2: last.y,
+          };
         }
       }
     }

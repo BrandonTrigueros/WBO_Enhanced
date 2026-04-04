@@ -1,12 +1,8 @@
-
-
 # PDFKit Guide
 
-*By Devon Govett*
+_By Devon Govett_
 
 Version 0.17.1
-
-
 
 ---
 
@@ -25,15 +21,15 @@ npm install pdfkit
 Creating a PDFKit document is quite simple. Just require the `pdfkit` module in your JavaScript source file and create an instance of the `PDFDocument` class.
 
 ```javascript
-const PDFDocument = require('pdfkit');
+const PDFDocument = require("pdfkit");
 const doc = new PDFDocument();
 ```
 
 PDFDocument instances are readable Node streams. They don't get saved anywhere automatically, but you can call the `pipe` method to send the output of the PDF document to another writable Node stream as it is being written. When you're done with your document, call the `end` method to finalize it. Here is an example showing how to pipe to a file or an HTTP response.
 
 ```javascript
-doc.pipe(fs.createWriteStream('/path/to/file.pdf')); // write to PDF
-doc.pipe(res);                                        // HTTP response
+doc.pipe(fs.createWriteStream("/path/to/file.pdf")); // write to PDF
+doc.pipe(res); // HTTP response
 
 // add stuff to PDF here using methods described below...
 
@@ -55,26 +51,26 @@ To get a Blob from a PDFDocument, you should pipe it to a blob-stream, which is 
 
 ```javascript
 // require dependencies
-const PDFDocument   =  require('pdfkit');
-const blobStream    =  require('blob-stream');
+const PDFDocument = require("pdfkit");
+const blobStream = require("blob-stream");
 
 // create  a  document     the same way as above
-const doc  =  new      PDFDocument;
+const doc = new PDFDocument();
 
 // pipe the   document to a   blob
-const stream   =  doc.pipe(blobStream());
+const stream = doc.pipe(blobStream());
 
 // add  your content to the    document here, as usual
 
 // get  a blob when you're    done
 doc.end();
-stream.on('finish',    function()                 {
- // get    a blob you  can  do whatever you like with
- const blob =                     stream.toBlob('application/pdf');
+stream.on("finish", function () {
+  // get    a blob you  can  do whatever you like with
+  const blob = stream.toBlob("application/pdf");
 
- // or get    a  blob URL  for display in the browser
- const url    =  stream.toBlobURL('application/pdf');
- iframe.src    = url;
+  // or get    a  blob URL  for display in the browser
+  const url = stream.toBlobURL("application/pdf");
+  iframe.src = url;
 });
 ```
 
@@ -100,7 +96,7 @@ doc.on('pageAdded', () => doc.text("Page Title"));
 
 You can also set some options for the page, such as its size and orientation.
 
-The `layout` property can be either *portrait* (the default) or *landscape*. The `size` property can be either an array specifying `[width, height]` in PDF points (72 per inch), or a string specifying a predefined size. A list of the predefined paper sizes can be seen here. The default is *letter*.
+The `layout` property can be either _portrait_ (the default) or _landscape_. The `size` property can be either an array specifying `[width, height]` in PDF points (72 per inch), or a string specifying a predefined size. A list of the predefined paper sizes can be seen here. The default is _letter_.
 
 Passing a page options object to the `PDFDocument` constructor will set the default paper size and layout for every page in the document, which is then overridden by individual options passed to the `addPage` method.
 
@@ -130,8 +126,6 @@ doc.addPage({
 ```
 
 ---
-
-
 
 # Switching to previous pages
 
@@ -169,8 +163,6 @@ doc.flushPages();
 doc.end();
 ```
 
-
-
 ---
 
 # Setting default font
@@ -184,24 +176,20 @@ const doc = new PDFDocument({font: 'Courier'});
 
 ---
 
-
-
 # Setting document metadata
 
 PDF documents can have various metadata associated with them, such as the title, or author of the document. You can add that information by adding it to the `doc.info` object, or by passing an info object into the document at creation time.
 
 Here is a list of all of the properties you can add to the document metadata. According to the PDF spec, each property must have its first letter capitalized.
 
-* **Title** - the title of the document
-* **Author** - the name of the author
-* **Subject** - the subject of the document
-* **Keywords** - keywords associated with the document
+- **Title** - the title of the document
+- **Author** - the name of the author
+- **Subject** - the subject of the document
+- **Keywords** - keywords associated with the document
 
-* **CreationDate** - the date the document was created (added automatically by PDFKit)
+- **CreationDate** - the date the document was created (added automatically by PDFKit)
 
-* **ModDate** - the date the document was last modified
-
-
+- **ModDate** - the date the document was last modified
 
 ---
 
@@ -255,12 +243,12 @@ To choose encryption method, you need to specify PDF version. PDFKit will choose
 
 ### Available options includes:
 
-* 1.3 - PDF version 1.3 (default), 40-bit RC4 is used
-* 1.4 - PDF version 1.4, 128-bit RC4 is used
-* 1.5 - PDF version 1.5, 128-bit RC4 is used
-* 1.6 - PDF version 1.6, 128-bit AES is used
-* 1.7 - PDF version 1.7, 128-bit AES is used
-* 1.7ext3 - PDF version 1.7 ExtensionLevel 3, 256-bit AES is used
+- 1.3 - PDF version 1.3 (default), 40-bit RC4 is used
+- 1.4 - PDF version 1.4, 128-bit RC4 is used
+- 1.5 - PDF version 1.5, 128-bit RC4 is used
+- 1.6 - PDF version 1.6, 128-bit AES is used
+- 1.7 - PDF version 1.7, 128-bit AES is used
+- 1.7ext3 - PDF version 1.7 ExtensionLevel 3, 256-bit AES is used
 
 When using PDF version 1.7 ExtensionLevel 3, password is truncated to 127 bytes of its UTF-8 representation. In older versions, password is truncated to 32 bytes, and only Latin-1 characters are allowed.
 
@@ -270,13 +258,13 @@ When using PDF version 1.7 ExtensionLevel 3, password is truncated to 127 bytes 
 
 PDF/A is a standard (ISO 19005-1:2005) which defines rules for electornic documents intended for long-term archiving. The restrictions on PDF/A documents are:
 
-* Cannot be encrypted
-* Fonts must be embedded
-* No JavaScript
-* No audio content
-* No video content
-* Addition of XMP metadata
-* Must define color spaces
+- Cannot be encrypted
+- Fonts must be embedded
+- No JavaScript
+- No audio content
+- No video content
+- Addition of XMP metadata
+- Must define color spaces
 
 Currently, PDFKit aims to support PDF/A-1b, PDF/A-2b, PDF/A-3b and PDF/A-1a, PDF/A-2a, PDF/A-3a standards, also known as level B conformance and level A conformance, respectively.
 
@@ -286,8 +274,8 @@ Similary, use PDF/A-2 or PDF/A-2b for PDF/A-2 level B conformance and PDF/A-2a f
 
 Futhermore, you will need to specify the other options relevant to the PDF/A subset you wish to use, for PDF/A-1 being:
 
-* **pdfVersion** set to at least 1.4
-* **tagged** set to true for PDF/A-1a
+- **pdfVersion** set to at least 1.4
+- **tagged** set to true for PDF/A-1a
 
 For PDF/A-2 and PDF/A-3, the pdfVersion needs to be set to at least 1.7 and tagged needs to be true for level A conformance.
 
@@ -301,11 +289,7 @@ Once you've created a PDFDocument instance, you can add content to the document.
 
 ---
 
-
-
 That's the basics! Now let's move on to PDFKit's powerful vector graphics abilities.
-
-
 
 ---
 
@@ -349,40 +333,40 @@ B10 (87.87 x 124.72)
 
 # C-series
 
-* C0 (2599.37 x 3676.54)
-* C1 (1836.85 x 2599.37)
-* C2 (1298.27 x 1836.85)
-* C3 (918.43 x 1298.27)
-* C4 (649.13 x 918.43)
-* C5 (459.21 x 649.13)
-* C6 (323.15 x 459.21)
-* C7 (229.61 x 323.15)
-* C8 (161.57 x 229.61)
-* C9 (113.39 x 161.57)
-* C10 (79.37 x 113.39)
+- C0 (2599.37 x 3676.54)
+- C1 (1836.85 x 2599.37)
+- C2 (1298.27 x 1836.85)
+- C3 (918.43 x 1298.27)
+- C4 (649.13 x 918.43)
+- C5 (459.21 x 649.13)
+- C6 (323.15 x 459.21)
+- C7 (229.61 x 323.15)
+- C8 (161.57 x 229.61)
+- C9 (113.39 x 161.57)
+- C10 (79.37 x 113.39)
 
 ## RA-series
 
-* RA0 (2437.80 x 3458.27)
-* RA1 (1729.13 x 2437.80)
-* RA2 (1218.90 x 1729.13)
-* RA3 (864.57 x 1218.90)
-* RA4 (609.45 x 864.57)
+- RA0 (2437.80 x 3458.27)
+- RA1 (1729.13 x 2437.80)
+- RA2 (1218.90 x 1729.13)
+- RA3 (864.57 x 1218.90)
+- RA4 (609.45 x 864.57)
 
 ## SRA-series
 
-* SRA0 (2551.18 x 3628.35)
-* SRA1 (1814.17 x 2551.18)
-* SRA2 (1275.59 x 1814.17)
-* SRA3 (907.09 x 1275.59)
-* SRA4 (637.80 x 907.09)
+- SRA0 (2551.18 x 3628.35)
+- SRA1 (1814.17 x 2551.18)
+- SRA2 (1275.59 x 1814.17)
+- SRA3 (907.09 x 1275.59)
+- SRA4 (637.80 x 907.09)
 
 The following predefined sizes are based on the common paper sizes used mainly in the United States of America and Canada. The dimensions in brackets are in PostScript points.
 
-* EXECUTIVE (521.86 x 756.00)
-* LEGAL (612.00 x 1008.00)
-* LETTER (612.00 X 792.00)
-* TABLOID (792.00 X 1224.00)
+- EXECUTIVE (521.86 x 756.00)
+- LEGAL (612.00 x 1008.00)
+- LETTER (612.00 X 792.00)
+- TABLOID (792.00 X 1224.00)
 
 PDFKit supports also the following paper sizes. The dimensions in brackets are in PostScript points.
 
@@ -416,7 +400,7 @@ Unlike images which are defined by pixels, vector graphics are defined through a
 
 ### Creating basic shapes
 
-Shapes are defined by a series of lines and curves. *lineTo*, *bezierCurveTo* and *quadraticCurveTo* all draw from the current point (which you can set with *moveTo*) to the specified point (always the last two arguments). Bezier curves use two control points and quadratic curves use just one. Here is an example that illustrates defining a path.
+Shapes are defined by a series of lines and curves. _lineTo_, _bezierCurveTo_ and _quadraticCurveTo_ all draw from the current point (which you can set with _moveTo_) to the specified point (always the last two arguments). Bezier curves use two control points and quadratic curves use just one. Here is an example that illustrates defining a path.
 
 ```
 doc.moveTo(0, 20)                               // set the current point
@@ -482,22 +466,20 @@ So far we have only been stroking our paths, but you can also fill them with the
 
 In order to make our drawings interesting, we really need to give them some style. PDFKit has many methods designed to do just that.
 
-* `lineWidth`
-* `lineCap`
-* `lineJoin`
-* `miterLimit`
-* `dash`
-* `fillColor`
-* `strokeColor`
-* `opacity`
-* `fillOpacity`
-* `strokeOpacity`
+- `lineWidth`
+- `lineCap`
+- `lineJoin`
+- `miterLimit`
+- `dash`
+- `fillColor`
+- `strokeColor`
+- `opacity`
+- `fillOpacity`
+- `strokeOpacity`
 
 Some of these are pretty self explanatory, but let's go through a few of them.
 
 ---
-
-
 
 # Line cap and line join
 
@@ -542,8 +524,6 @@ The output of this example looks like this.
 
 ![Three examples of line caps (butt, round, square) in the top row and three examples of line joins (miter, round, bevel) as squares in the bottom row](page_19_image_1_v2.jpg)
 
-
-
 ---
 
 # Dashed lines
@@ -575,10 +555,11 @@ The **fillColor** and **strokeColor** methods accept an optional second argument
 The **fill** and **stroke** methods also accept a color as an argument so that you don't have to call **fillColor** or **strokeColor** beforehand. The **fillAndStroke** method accepts both fill and stroke colors as arguments.
 
 ```js
-doc.circle(100, 50, 50)
+doc
+  .circle(100, 50, 50)
   .lineWidth(3)
   .fillOpacity(0.8)
-  .fillAndStroke("red",  "#900")
+  .fillAndStroke("red", "#900");
 ```
 
 This example produces the following output:
@@ -630,7 +611,7 @@ Here is the output from the this example:
 
 # Winding rules
 
-Winding rules define how a path is filled and are best illustrated by an example. The winding rule is an optional attribute to the *fill* and *fillAndStroke* methods, and there are two values to choose from: **non-zero** and **even-odd**.
+Winding rules define how a path is filled and are best illustrated by an example. The winding rule is an optional attribute to the _fill_ and _fillAndStroke_ methods, and there are two values to choose from: **non-zero** and **even-odd**.
 
 ```
 // Initial setup
@@ -654,8 +635,6 @@ You'll notice that I used the **scale** and **translate** transformations in thi
 
 ---
 
-
-
 # Saving and restoring the graphics stack
 
 Once you start producing more complex vector drawings, you will want to be able to save and restore the state of the graphics context. The graphics state is basically a snapshot of all the styles and transformations (see below) that have been applied, and many states can be created and stored on a stack. Every time the save method is called, the current graphics state is pushed onto the stack, and when you call restore, the last state on the stack is applied to the context again. This way, you can save the state, change some styles, and then restore it to how it was before you made those changes.
@@ -675,16 +654,15 @@ If you are feeling particularly smart, you can modify the transformation matrix 
 We used the scale and translate transformations above, so here is an example of using the rotate transformation. We'll set the origin of the rotation to the center of the rectangle.
 
 ```js
-doc.rotate(20, {origin: [150, 70]})
+doc
+  .rotate(20, { origin: [150, 70] })
   .rect(100, 20, 100, 100)
-  .fill('gray');
+  .fill("gray");
 ```
 
 This example produces the following effect.
 
 ![Rotated gray square](page_24_image_1_v2.jpg)
-
-
 
 ---
 
@@ -694,15 +672,13 @@ A clipping path is a path defined using the normal path creation methods, but in
 
 ```javascript
 // Create a clipping path
-doc.circle(100, 100, 100)
-    .clip();
+doc.circle(100, 100, 100).clip();
 
 // Draw a checkerboard pattern
 for (let row = 0; row < 10; row++) {
   for (let col = 0; col < 10; col++) {
-    const color = (col % 2) - (row % 2) ? '#eee' : '#4183C4';
-    doc.rect(row * 20, col * 20, 20, 20)
-       .fill(color);
+    const color = (col % 2) - (row % 2) ? "#eee" : "#4183C4";
+    doc.rect(row * 20, col * 20, 20, 20).fill(color);
   }
 }
 ```
@@ -716,8 +692,6 @@ If you want to "unclip", you can use the **save** method before the clipping, an
 That's it for vector graphics in PDFKit. Now let's move on to learning about PDFKit's text support!
 
 ---
-
-
 
 # Text in PDFKit
 
@@ -735,8 +709,6 @@ doc.text('Hello world!', 100, 100)
 If you want to move down or up by lines, just call the moveDown or moveUp method with the number of lines you'd like to move (1 by default).
 ```
 
-
-
 ---
 
 # Line wrapping and justification
@@ -748,35 +720,32 @@ The text will automatically wrap unless you set the `lineBreak` option to `false
 When line wrapping is enabled, you can choose a text justification. There are four options: **left** (the default), **center**, **right**, and **justify**. They work just as they do in your favorite word processor, but here is an example showing their use in a text box.
 
 ```js
-const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam in suscipit purus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus nec hendrerit felis. Morbi aliquam facilisis risus eu lacinia. Sed eu leo in turpis fringilla hendrerit. Ut nec accumsan nisl.';
+const lorem =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam in suscipit purus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus nec hendrerit felis. Morbi aliquam facilisis risus eu lacinia. Sed eu leo in turpis fringilla hendrerit. Ut nec accumsan nisl.";
 
 doc.fontSize(8);
 doc.text(`This text is left aligned. ${lorem}`, {
   width: 410,
-  align: 'left'
-}
-);
+  align: "left",
+});
 
 doc.moveDown();
 doc.text(`This text is centered. ${lorem}`, {
   width: 410,
-  align: 'center'
-}
-);
+  align: "center",
+});
 
 doc.moveDown();
 doc.text(`This text is right aligned. ${lorem}`, {
   width: 410,
-  align: 'right'
-}
-);
+  align: "right",
+});
 
 doc.moveDown();
 doc.text(`This text is justified. ${lorem}`, {
   width: 410,
-  align: 'justify'
-}
-);
+  align: "justify",
+});
 
 // draw bounding rectangle
 doc.rect(doc.x, 0, 410, doc.y).stroke();
@@ -850,11 +819,11 @@ Additionally, the fill and stroke color and opacity methods described in the vec
 
 ---
 
-
 Here is an example combining some of the options above, wrapping a piece of text into three columns, in a specified width and height.
 
 ```js
-const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam in suscipit purus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus nec hendrerit felis. Morbi aliquam facilisis risus eu lacinia. Sed eu leo in turpis fringilla hendrerit. Ut nec accumsan nisl. Suspendisse rhoncus nisl posuere tortor tempus et dapibus elit porta. Cras leo neque, elementum a rhoncus ut, vestibulum non nibh. Phasellus pretium justo turpis. Etiam vulputate, odio vitae tincidunt ultricies, eros odio dapibus nisi, ut tincidunt lacus arcu eu elit. Aenean velit erat, vehicula eget lacinia ut, dignissim non tellus. Aliquam nec lacus mi, sed vestibulum nunc. Suspendisse potenti. Curabitur vitae sem turpis. Vestibulum sed neque eget dolor dapibus porttitor at sit amet sem. Fusce a turpis lorem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;';
+const lorem =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam in suscipit purus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus nec hendrerit felis. Morbi aliquam facilisis risus eu lacinia. Sed eu leo in turpis fringilla hendrerit. Ut nec accumsan nisl. Suspendisse rhoncus nisl posuere tortor tempus et dapibus elit porta. Cras leo neque, elementum a rhoncus ut, vestibulum non nibh. Phasellus pretium justo turpis. Etiam vulputate, odio vitae tincidunt ultricies, eros odio dapibus nisi, ut tincidunt lacus arcu eu elit. Aenean velit erat, vehicula eget lacinia ut, dignissim non tellus. Aliquam nec lacus mi, sed vestibulum nunc. Suspendisse potenti. Curabitur vitae sem turpis. Vestibulum sed neque eget dolor dapibus porttitor at sit amet sem. Fusce a turpis lorem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;";
 ```
 
 ```js
@@ -863,7 +832,7 @@ doc.text(lorem, {
   columnGap: 15,
   height: 100,
   width: 465,
-  align: 'justify'
+  align: "justify",
 });
 ```
 
@@ -885,17 +854,13 @@ However `boundsOfString` factors in text rotations and multi-line wrapped text, 
 
 ---
 
-
-
 # Lists
 
 The list method creates a bulleted list. It accepts as arguments an array of strings, and the optional x, y position. You can create complex multilevel lists by using nested arrays. Lists use the following additional options:
 
-* `bulletRadius`
-* `textIndent`
-* `bulletIndent`
-
-
+- `bulletRadius`
+- `textIndent`
+- `bulletIndent`
 
 ---
 
@@ -906,11 +871,13 @@ As mentioned above, PDFKit supports a simple form of rich text via the **continu
 The options given to the first **text** call are also retained for subsequent calls after a **continued** one, but of course you can override them. In the following example, the **width** option from the first **text** call is retained by the second call.
 
 ```js
-doc.fillColor('green')
+doc
+  .fillColor("green")
   .text(lorem.slice(0, 500), {
     width: 465,
-    continued: true
-  }).fillColor('red')
+    continued: true,
+  })
+  .fillColor("red")
   .text(lorem.slice(500));
 ```
 
@@ -921,19 +888,20 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam in suscipit purus
 To cancel a link in rich text set the **link** option to **null**.
 
 ```js
-doc.fillColor('red')
+doc
+  .fillColor("red")
   .text(lorem.slice(0, 199), {
     width: 465,
-    continued: true
+    continued: true,
   })
-  .fillColor('blue')
+  .fillColor("blue")
   .text(lorem.slice(199, 282), {
-    link: 'http://www.example.com',
-    continued: true
+    link: "http://www.example.com",
+    continued: true,
   })
-  .fillColor('green')
+  .fillColor("green")
   .text(lorem.slice(182, 400), {
-    link: null
+    link: null,
   });
 ```
 
@@ -943,11 +911,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam in suscipit purus
 
 ---
 
-
-
 # Fonts
 
-The PDF format defines 14 standard fonts that can be used in PDF documents. PDFKit supports each of them out of the box. Besides Symbol and Zapf Dingbats this includes 4 styles (regular, bold, italic/oblique, bold+italic) of Helvetica, Courier, and Times. To switch between standard fonts, call the `font` method with the corresponding *Label*:
+The PDF format defines 14 standard fonts that can be used in PDF documents. PDFKit supports each of them out of the box. Besides Symbol and Zapf Dingbats this includes 4 styles (regular, bold, italic/oblique, bold+italic) of Helvetica, Courier, and Times. To switch between standard fonts, call the `font` method with the corresponding _Label_:
 
 ```
 'Courier'
@@ -987,8 +953,6 @@ doc.font('fonts/GoodDog.ttf')
   .moveDown(0.5);
 ```
 
-
-
 ---
 
 ```
@@ -1024,27 +988,27 @@ That's about all there is too it for text in PDFKit. Let's move on now to images
 
 Adding images to PDFKit documents is an easy task. Just pass an image path, buffer, or data uri with base64 encoded data to the `image` method along with some optional arguments. PDFKit supports the JPEG and PNG formats. If an X and Y position are not provided, the image is rendered at the current point in the text flow (below the last line of text). Otherwise, it is positioned absolutely at the specified point. The image will be scaled according to the following options.
 
-* **Neither `width` or `height` provided** - image is rendered at full size
+- **Neither `width` or `height` provided** - image is rendered at full size
 
-* **`width` provided but not `height`** - image is scaled proportionally to fit in the provided **width**  
-* **`height` provided but not `width`** - image is scaled proportionally to fit in the provided **height**  
-* **Both `width` and `height` provided** - image is stretched to the dimensions provided  
-* **`scale` factor provided** - image is scaled proportionally by the provided scale factor  
-* **`fit` array provided** - image is scaled proportionally to fit within the passed width and height  
-* **`cover` array provided** - image is scaled proportionally to completely cover the rectangle defined by the passed width and height
+- **`width` provided but not `height`** - image is scaled proportionally to fit in the provided **width**
+- **`height` provided but not `width`** - image is scaled proportionally to fit in the provided **height**
+- **Both `width` and `height` provided** - image is stretched to the dimensions provided
+- **`scale` factor provided** - image is scaled proportionally by the provided scale factor
+- **`fit` array provided** - image is scaled proportionally to fit within the passed width and height
+- **`cover` array provided** - image is scaled proportionally to completely cover the rectangle defined by the passed width and height
 
-* **`link`** - a URL to link this image to (shortcut to create an annotation)
+- **`link`** - a URL to link this image to (shortcut to create an annotation)
 
-* **`goTo`** - go to anchor (shortcut to create an annotation)
+- **`goTo`** - go to anchor (shortcut to create an annotation)
 
-* **`destination`** - create anchor to this image
+- **`destination`** - create anchor to this image
 
-* **`ignoreOrientation`** - (true/false) ignore JPEG EXIF orientation. By default, images with JPEG EXIF orientation are properly rotated and/or flipped. Defaults to false, unless `ignoreOrientation` option set to `true` when creating the `PDFDocument` object (e.g. `new PDFDocument({ignoreOrientation: true})`)
+- **`ignoreOrientation`** - (true/false) ignore JPEG EXIF orientation. By default, images with JPEG EXIF orientation are properly rotated and/or flipped. Defaults to false, unless `ignoreOrientation` option set to `true` when creating the `PDFDocument` object (e.g. `new PDFDocument({ignoreOrientation: true})`)
 
 When a `fit` or `cover` array is provided, PDFKit accepts these additional options:
 
-* **`align`** - horizontally align the image, the possible values are `'left'`, `'center'` and `'right'`  
-* **`valign`** - vertically align the image, the possible values are `'top'`, `'center'` and `'bottom'`
+- **`align`** - horizontally align the image, the possible values are `'left'`, `'center'` and `'right'`
+- **`valign`** - vertically align the image, the possible values are `'top'`, `'center'` and `'bottom'`
 
 Here is an example showing some of these options.
 
@@ -1068,17 +1032,23 @@ doc.image('images/test.jpeg',  320,  145, {width: 200, height:   100})
 
 ```js
 // Scale the image
-doc.image('images/test.jpeg', 320, 280, {scale: 0.25})
-  .text('Scale', 320, 265);
+doc
+  .image("images/test.jpeg", 320, 280, { scale: 0.25 })
+  .text("Scale", 320, 265);
 
 // Fit the image in the dimensions, and center it both horizontally and vertically
-doc.image('images/test.jpeg', 430, 15, {fit: [100, 100], align: 'center', valign: 'center'})
-  .rect(430, 15, 100, 100).stroke()
-  .text('Centered', 430, 0);
+doc
+  .image("images/test.jpeg", 430, 15, {
+    fit: [100, 100],
+    align: "center",
+    valign: "center",
+  })
+  .rect(430, 15, 100, 100)
+  .stroke()
+  .text("Centered", 430, 0);
 ```
 
 ---
-
 
 # This example produces the following output:
 
@@ -1086,7 +1056,7 @@ doc.image('images/test.jpeg', 430, 15, {fit: [100, 100], align: 'center', valign
 
 ![Sidewalk lined with blossoming trees (large)](page_38_image_1_v2.jpg)
 
-**Fit**     **Centered**
+**Fit** **Centered**
 
 ![Small cropped view (Fit)](page_38_image_5_v2.jpg)
 
@@ -1102,10 +1072,7 @@ doc.image('images/test.jpeg', 430, 15, {fit: [100, 100], align: 'center', valign
 
 That is all there is to adding images to your PDF documents with PDFKit. Now let's look at adding outlines.
 
-
 ---
-
-
 
 # Outlines in PDFKit
 
@@ -1120,13 +1087,11 @@ Here is an example of adding a bookmark with a single child bookmark.
 const { outline } = doc;
 
 // Add a top-level bookmark
-const top = outline.addItem('Top Level');
+const top = outline.addItem("Top Level");
 
 // Add a sub-section
-top.addItem('Sub-section');
+top.addItem("Sub-section");
 ```
-
-
 
 ---
 
@@ -1173,7 +1138,6 @@ If you are adding an annotation to a piece of text, such as a link or underline,
 You must remember that annotations have a stacking order. If you are putting more than one annotation on a single area and one of those annotations is a link, make sure that the link is the last one you add, otherwise it will be covered by another annotation and the user won't be able to click it.
 
 ---
-
 
 Here is an example that uses a few of the annotation types.
 
@@ -1237,13 +1201,10 @@ This text uses spot color!
 Annotations are currently not the easiest things to add to PDF documents, but that is the fault of the PDF spec itself. Calculating a rectangle manually isn't fun, but PDFKit makes it easier for a few common annotations applied to text, including links, underlines, and strikes. Here's an example showing two of them:
 
 ```js
-doc.fontSize(20)
-  .fillColor('red')
-  .text('Another link!', 20, 0, {
-    link: 'http://apple.com/',
-    underline: true
-  }
-);
+doc.fontSize(20).fillColor("red").text("Another link!", 20, 0, {
+  link: "http://apple.com/",
+  underline: true,
+});
 ```
 
 The output is as you'd expect:
@@ -1259,7 +1220,7 @@ Forms are an interactive feature of the PDF format. Forms make it possible to ad
 `initForm()` - Must be called before adding a form annotation to the document.
 
 ```javascript
-doc.font('Helvetica'); // establishes the default form field font
+doc.font("Helvetica"); // establishes the default form field font
 doc.initForm();
 ```
 
@@ -1292,25 +1253,23 @@ Common Options
 
 Form Annotation **options** that are common across all form annotation types are:
 
-* **required** [boolean] - The field must have a value by the time the form is submitted.
-* **noExport** [boolean] - The field will not be exported if a form is submitted.
-* **readOnly** [boolean] - The user may not change the value of the field, and the field will not respond to mouse clicks. This is useful for fields that have computed values.
-* **value** [number|string] - The field's value.
-* **defaultValue** [number|string] - The default value to which the field reverts if a reset-form action is executed.
+- **required** [boolean] - The field must have a value by the time the form is submitted.
+- **noExport** [boolean] - The field will not be exported if a form is submitted.
+- **readOnly** [boolean] - The user may not change the value of the field, and the field will not respond to mouse clicks. This is useful for fields that have computed values.
+- **value** [number|string] - The field's value.
+- **defaultValue** [number|string] - The default value to which the field reverts if a reset-form action is executed.
 
 Some form annotations have **color** options. You can use an array of RGB values, a hex color, or a named CSS color value for that option.
 
-* **backgroundColor** - field background color
+- **backgroundColor** - field background color
 
 ---
-
-
 
 borderColor - field border color
 
 # Text Field Options
 
-**align** [string] - Sets the alignment to *left*, *center* or *right*.
+**align** [string] - Sets the alignment to _left_, _center_ or _right_.
 
 **multiline** [boolean] - Allows the field to have multiple lines of text.
 
@@ -1354,10 +1313,7 @@ js var opts = { backgroundColor: 'yellow', label: 'Test Button' };
 doc.formPushButton('btn1', 10, 200, 100, 30, opts);
 ```
 
-
-
 ---
-
 
 Text Field Formatting
 
@@ -1368,30 +1324,33 @@ When needing to format the text value of a Form Annotation, the following **opti
 Add a format dictionary to **options**. The dictionary must contain a **type** attribute.
 
 **format** - generic object  
-**format.type** - value must be one of *date, time, percent, number, zip, zipPlus4, phone* or *ssn*.
+**format.type** - value must be one of _date, time, percent, number, zip, zipPlus4, phone_ or _ssn_.
 
-When **type** is *date, time, percent* or *number* the format dictionary must contain additional parameters as described below.
+When **type** is _date, time, percent_ or _number_ the format dictionary must contain additional parameters as described below.
 
 Date format
 
 **format.param** (string) - specifies the value and display format and can include:
-* **d** - single digit day of month
-* **dd** - double digit day of month
-* **m** - month digit
-* **mm** - month double digit
-* **mmm** - abbreviated month name
-* **mmmm** - full month name
-* **yy** - two digit year
-* **yyyy** - four digit year
-* **hh** - hour for 12 hour clock
-* **HH** - hour for 24 hour clock
-* **MM** - two digit minute
-* **tt** - am or pm
+
+- **d** - single digit day of month
+- **dd** - double digit day of month
+- **m** - month digit
+- **mm** - month double digit
+- **mmm** - abbreviated month name
+- **mmmm** - full month name
+- **yy** - two digit year
+- **yyyy** - four digit year
+- **hh** - hour for 12 hour clock
+- **HH** - hour for 24 hour clock
+- **MM** - two digit minute
+- **tt** - am or pm
 
 ```js
 // Date text field formatting
-doc.formText('field.date', 10, 60, 200, 40,
-{ align: 'center', format: { type: 'date', param: 'mmmm d, yyyy' } });
+doc.formText("field.date", 10, 60, 200, 40, {
+  align: "center",
+  format: { type: "date", param: "mmmm d, yyyy" },
+});
 ```
 
 Time format
@@ -1400,15 +1359,13 @@ Time format
 
 ```js
 // Time text field formatting
-doc.formText('field.time', 10, 60, 200, 40,
-{ align: 'center', format: { type: 'time', param: 2 } });
+doc.formText("field.time", 10, 60, 200, 40, {
+  align: "center",
+  format: { type: "time", param: 2 },
+});
 ```
 
-
-
 ---
-
-
 
 # Number and percent format
 
@@ -1429,21 +1386,19 @@ doc.formText('field.time', 10, 60, 200, 40,
 
 ```js
 // Currency text field formatting
-doc.formText('leaf2', 10, 60, 200, 40, {
+doc.formText("leaf2", 10, 60, 200, 40, {
   multiline: true,
-  align: 'right',
+  align: "right",
   format: {
-    type: 'number',
+    type: "number",
     nDec: 2,
     sepComma: true,
-    negStyle: 'ParensRed',
-    currency: '$',
-    currencyPrepend: true
-  }
+    negStyle: "ParensRed",
+    currency: "$",
+    currencyPrepend: true,
+  },
 });
 ```
-
-
 
 ---
 
@@ -1471,7 +1426,7 @@ doc.formText('leaf1', 10, 110, 200, 80, { parent: child2Field, multiline: true }
 
 // Add push button form annotation 'btn1' var opts = { backgroundColor: 'yellow', label:
 'Test Button' }; doc.formPushButton('btn1', 10, 200, 100, 30, opts);
-`
+`;
 ```
 
 The output of this example looks like this.
@@ -1534,8 +1489,6 @@ NO_CONTENT_HERE
 
 ---
 
-
-
 # Destinations
 
 Anchor may specify a destination by addNamedDestination(name, ...args), which consists of a page, the location of the display window on that page, and the zoom factor to use when displaying that page.
@@ -1571,11 +1524,7 @@ doc.text('Another goto',   20, 0, {
 
 ## Examples of go to link to anchor:
 
-
-
 ---
-
-
 
 # Attachments in PDFKit
 
@@ -1601,25 +1550,23 @@ doc.file('data:text/plain;base64,YmFzZTY0IHN0cmluZw==', { name: 'base64.txt' })
 
 There are a few other options for `doc.file`:
 
-* **name** - specify the embedded file's name
+- **name** - specify the embedded file's name
 
-* **type** - specify the embedded file's subtype as a MIME-Type
+- **type** - specify the embedded file's subtype as a MIME-Type
 
-* **description** - add descriptive text for the embedded file
+- **description** - add descriptive text for the embedded file
 
-* **hidden** - if true, do not show file in the list of embedded files
+- **hidden** - if true, do not show file in the list of embedded files
 
-* **creationDate** - override the date and time the file was created
+- **creationDate** - override the date and time the file was created
 
-* **modifiedDate** - override the date and time the file was last updated
+- **modifiedDate** - override the date and time the file was last updated
 
-* **relationship** - relationship between the PDF document and its attached file. Can be 'Alternative', 'Data', 'Source', 'Supplement' or 'Unspecified'.
+- **relationship** - relationship between the PDF document and its attached file. Can be 'Alternative', 'Data', 'Source', 'Supplement' or 'Unspecified'.
 
 If you are attaching a file from your file system, `creationDate` and `modifiedDate` will be set to the source file's creationDate and modifiedDate.
 
 Setting the `hidden` option prevents this file from showing up in the pdf viewer's attachment panel. While this may not be very useful for embedded files, it is absolutely necessary for file annotations, to prevent them from showing up twice in the attachment panel.
-
-
 
 ---
 
@@ -1633,13 +1580,13 @@ Here is an example of adding a file annotation:
 
 ```js
 const file = {
-  src: path.join(__dirname, 'example.txt'),
-  name: 'example.txt',
-  description: 'file annotation description'
-}
-const options = { Name: 'Paperclip' }
+  src: path.join(__dirname, "example.txt"),
+  name: "example.txt",
+  description: "file annotation description",
+};
+const options = { Name: "Paperclip" };
 
-doc.fileAnnotation(100, 100, 100, 100, file, options)
+doc.fileAnnotation(100, 100, 100, 100, file, options);
 ```
 
 The annotation's appearance may be changed by setting the **Name** option to one of the three predefined icons **GraphPush**, **Paperclip** or **Push** (default value).
@@ -1705,19 +1652,19 @@ Tags to use are listed in a later section.
 
 When marking content, you can provide options (take care to use correct capitalisation):
 
-* **type** - used for artifact content; may be Pagination (e.g. headers and footers), Layout (e.g. rules and backgrounds) or Page (cut marks etc.)
+- **type** - used for artifact content; may be Pagination (e.g. headers and footers), Layout (e.g. rules and backgrounds) or Page (cut marks etc.)
 
-* **bbox** - bounding box for artifact content: [left, top, right, bottom] in default coordinates
+- **bbox** - bounding box for artifact content: [left, top, right, bottom] in default coordinates
 
-* **attached** - used for Pagination artifact content, array of one or more strings: Top, Bottom, Left, Right
+- **attached** - used for Pagination artifact content, array of one or more strings: Top, Bottom, Left, Right
 
-* **lang** - used for Span content: human language code (e.g. en-AU) which overrides default document language, and any enclosing structure element language
+- **lang** - used for Span content: human language code (e.g. en-AU) which overrides default document language, and any enclosing structure element language
 
-* **alt** - used for Span content: alternative text for an image or other visual content
+- **alt** - used for Span content: alternative text for an image or other visual content
 
-* **expanded** - used for Span content: the expanded form of an abbreviation or acronym
+- **expanded** - used for Span content: the expanded form of an abbreviation or acronym
 
-* **actual** - used for Span content: the actual text the content represents (e.g. if it is rendered as vector graphics)
+- **actual** - used for Span content: the actual text the content represents (e.g. if it is rendered as vector graphics)
 
 It is advisable not to use Span content for specifying alternative text, expanded form, or actual text, especially if there is a possibility of the content automatically wrapping, which would result in the text appearing twice. Set these options on an associated structure element instead.
 
@@ -1819,11 +1766,11 @@ Note that if you provide children when creating a structure element (i.e. provid
 
 For an element to be flushed out, it must:
 
-* be ended,
+- be ended,
 
-* have been added to its parent, and
+- have been added to its parent, and
 
-* if it has content defined through closures (see next section), be attached to the document's structure (through its ancestors)
+- if it has content defined through closures (see next section), be attached to the document's structure (through its ancestors)
 
 When you call `doc.end()`, the document's structure is recursively ended, resulting in all elements being flushed out. If you created elements but forgot to add them to the document's structure, they will not be flushed, but the PDF stream will wait for them to be flushed before ending, causing your application to hang. Make sure if you create any
 
@@ -1836,18 +1783,20 @@ elements, you add them to a parent, so ultimately all elements are attached to t
 The common case where a structure element contains only content marked with a tag matching the structure element type can be achieved by using a closure:
 
 ```js
-doc.addStructure(doc.struct('P', () => {
-    doc.text('Hello, world! ');
-}));
+doc.addStructure(
+  doc.struct("P", () => {
+    doc.text("Hello, world! ");
+  }),
+);
 ```
 
 This is equivalent to:
 
 ```js
-const myStruct = doc.struct('P');
+const myStruct = doc.struct("P");
 doc.addStructure(myStruct);
-const myStructContent = doc.markStructureContent('P');
-doc.text('Hello, world! ');
+const myStructContent = doc.markStructureContent("P");
+doc.text("Hello, world! ");
 doc.endMarkedContent();
 myStruct.add(myStructContent);
 myStruct.end();
@@ -1856,12 +1805,16 @@ myStruct.end();
 Note that the content is marked and the closure is executed if/when the element is attached to the document's structure. This means that you can do something like this:
 
 ```js
-const myParagraph = doc.struct('P', [
-  () => { doc.text("Please see ", { continued: true }); },
-  doc.struct('Link', () => {
+const myParagraph = doc.struct("P", [
+  () => {
+    doc.text("Please see ", { continued: true });
+  },
+  doc.struct("Link", () => {
     doc.text("something", { link: "http://www.example.com/", continued: true });
   }),
-  () => { doc.text(" for details. ", { link: null }); }
+  () => {
+    doc.text(" for details. ", { link: null });
+  },
 ]);
 ```
 
@@ -1889,38 +1842,46 @@ title - title of the structure element (e.g. "Chapter 1")
 
 ---
 
-
-
-* lang - human language code (e.g. en-AU) which overrides default document language  
-* alt - alternative text for an image or other visual content  
-* expanded - the expanded form of an abbreviation or acronym  
-* actual - the actual text the content represents (e.g. if it is rendered as vector graphics)
+- lang - human language code (e.g. en-AU) which overrides default document language
+- alt - alternative text for an image or other visual content
+- expanded - the expanded form of an abbreviation or acronym
+- actual - the actual text the content represents (e.g. if it is rendered as vector graphics)
 
 ## Example of a structure tree with options specified:
 
 ```javascript
-const titlePage = doc.struct('Sect', {
-  title: 'Title Page'
-}, [
-  doc.struct('H', [
-    doc.struct('Span', {
-      expanded: 'Portable Document Format for Universal Accessibility',
-      actual: 'PDF/UA'
-    }, [
-      pdfUAStructureContent
+const titlePage = doc.struct(
+  "Sect",
+  {
+    title: "Title Page",
+  },
+  [
+    doc.struct("H", [
+      doc.struct(
+        "Span",
+        {
+          expanded: "Portable Document Format for Universal Accessibility",
+          actual: "PDF/UA",
+        },
+        [pdfUAStructureContent],
+      ),
+      doc.struct(
+        "Span",
+        {
+          actual: "in a Nutshell",
+        },
+        [inANutshellStructureContent],
+      ),
     ]),
-    doc.struct('Span', {
-      actual: 'in a Nutshell'
-    }, [
-      inANutshellStructureContent
-    ]),
-  ]),
-  doc.struct('Figure', {
-    alt: 'photo of a concrete path with tactile paving'
-  }, [
-    photoStructureContent
-  ])
-]);
+    doc.struct(
+      "Figure",
+      {
+        alt: "photo of a concrete path with tactile paving",
+      },
+      [photoStructureContent],
+    ),
+  ],
+);
 ```
 
 ## Automatic Marking and Structure Construction for Text
@@ -1931,7 +1892,7 @@ The `text()` method accepts a **structParent** option which you can use to speci
 
 ```javascript
 // Create a section, add it to the document structure, then add paragraphs to it
-const section = doc.struct('Sect');
+const section = doc.struct("Sect");
 doc.addStructure(section);
 doc.text("Foo. \nBar. ", { structParent: section });
 ```
@@ -1939,15 +1900,21 @@ doc.text("Foo. \nBar. ", { structParent: section });
 This is equivalent to:
 
 ```javascript
-const section = doc.struct('Sect');
+const section = doc.struct("Sect");
 doc.addStructure(section);
-section.add(doc.struct('P', () => { doc.text("Foo. "); }));
-section.add(doc.struct('P', () => { doc.text("Bar. "); }));
+section.add(
+  doc.struct("P", () => {
+    doc.text("Foo. ");
+  }),
+);
+section.add(
+  doc.struct("P", () => {
+    doc.text("Bar. ");
+  }),
+);
 ```
 
 The `list()` method also accepts a **structParent** option. By default, it add list items (type LI ) to the parent, each of which contains a label (type Lbl, which holds the bullet, number, or
-
-
 
 ---
 
@@ -1957,7 +1924,7 @@ letter) and a body (type `LBody`, which holds the actual item content). You can 
 
 ```javascript
 // Create a list, add it to the structure tree, then add items to it
-const list = doc.struct('List');
+const list = doc.struct("List");
 someElement.add(list);
 doc.list(["Foo. ", "Bar. "], { structParent: list });
 ```
@@ -1972,33 +1939,33 @@ Tagged PDF also supports custom types which map to standard types, but PDFKit do
 
 ## Non-structure tags:
 
-* **Artifact** - used to mark all content not part of the logical structure
-* **ReversedChars** - every string of text has characters in reverse order for technical reasons (due to how fonts work for right-to-left languages); strings may have spaces at the beginning or end to separate words, but may not have spaces in the middle
+- **Artifact** - used to mark all content not part of the logical structure
+- **ReversedChars** - every string of text has characters in reverse order for technical reasons (due to how fonts work for right-to-left languages); strings may have spaces at the beginning or end to separate words, but may not have spaces in the middle
 
 ## "Grouping" elements:
 
-* **Document** - whole document; must be used if there are multiple parts or articles
-* **Part** - part of a document
-* **Art** - article
-* **Sect** - section; may nest
-* **Div** - generic division
-* **BlockQuote** - block quotation
-* **Caption** - describing a figure or table
-* **TOC** - table of contents, may be nested, and may be used for lists of figures, tables, etc.
-* **TOCI** - table of contents (leaf) item
-* **Index** - index (text with accompanying **Reference** content)
-* **NonStruct** - non-structural grouping element (element itself not intended to be exported to other formats like HTML, but 'transparent' to its content which is processed normally)
-* **Private** - content only meaningful to the creator (element and its content not intended to be exported to other formats like HTML)
+- **Document** - whole document; must be used if there are multiple parts or articles
+- **Part** - part of a document
+- **Art** - article
+- **Sect** - section; may nest
+- **Div** - generic division
+- **BlockQuote** - block quotation
+- **Caption** - describing a figure or table
+- **TOC** - table of contents, may be nested, and may be used for lists of figures, tables, etc.
+- **TOCI** - table of contents (leaf) item
+- **Index** - index (text with accompanying **Reference** content)
+- **NonStruct** - non-structural grouping element (element itself not intended to be exported to other formats like HTML, but 'transparent' to its content which is processed normally)
+- **Private** - content only meaningful to the creator (element and its content not intended to be exported to other formats like HTML)
 
 ## "Block" elements:
 
-* **H** - heading (first element in a section, etc.)
-* **H1 to H6** - heading of a particular level intended for use only if nesting sections is not possible for some reason
-* **P** - paragraph
-* **L** - list; should include optional **Caption**, and list items
-* **LI** - list item; should contain **Lbl** and/or **LBody**
-* **Lbl** - label (bullet, number, or "dictionary headword")
-* **LBody** - list body (item text, or "dictionary definition"); may have nested lists or other blocks
+- **H** - heading (first element in a section, etc.)
+- **H1 to H6** - heading of a particular level intended for use only if nesting sections is not possible for some reason
+- **P** - paragraph
+- **L** - list; should include optional **Caption**, and list items
+- **LI** - list item; should contain **Lbl** and/or **LBody**
+- **Lbl** - label (bullet, number, or "dictionary headword")
+- **LBody** - list body (item text, or "dictionary definition"); may have nested lists or other blocks
 
 ---
 
@@ -2073,18 +2040,19 @@ Basic tables can be defined without configuration:
 ```js
 doc.table({
   data: [
-    ['Column 1', 'Column 2', 'Column 3'],
-    ['One value goes here', 'Another one here', 'OK?']
-  ]
-})
+    ["Column 1", "Column 2", "Column 3"],
+    ["One value goes here", "Another one here", "OK?"],
+  ],
+});
 ```
 
 or the more verbose way
 
 ```js
-doc.table()
-  .row(['Column 1', 'Column 2', 'Column 3'])
-  .row(['One value goes here', 'Another one here', 'OK?'])
+doc
+  .table()
+  .row(["Column 1", "Column 2", "Column 3"])
+  .row(["One value goes here", "Another one here", "OK?"]);
 ```
 
 <table>
@@ -2104,11 +2072,7 @@ doc.table()
   </tbody>
 </table>
 
-
-
 ---
-
-
 
 # Defining column widths
 
@@ -2153,8 +2117,6 @@ doc.table({
     </tr>
   </tbody>
 </table>
-
-
 
 ---
 
@@ -2219,10 +2181,7 @@ doc.table({
   </tbody>
 </table>
 
-
-
 ---
-
 
 # With height from function:
 
@@ -2274,7 +2233,7 @@ doc.table({
     ],
     ["Sample value 1"],
   ],
-})
+});
 ```
 
 <table>
@@ -2318,8 +2277,6 @@ doc.table({
   </tbody>
 </table>
 
-
-
 ---
 
 # Styling
@@ -2337,7 +2294,7 @@ doc.table({
     ["Sample value 1", "Sample value 2", "Sample value 3"],
     ["Sample value 1", "Sample value 2", "Sample value 3"],
   ],
-})
+});
 ```
 
 <table>
@@ -2392,7 +2349,7 @@ doc.table({
     ["Sample value 1", "Sample value 2", "Sample value 3"],
     ["Sample value 1", "Sample value 2", "Sample value 3"],
   ],
-})
+});
 ```
 
 <table>
@@ -2432,11 +2389,7 @@ doc.table({
   </tbody>
 </table>
 
-
-
 ---
-
-
 
 # Light Horizontal lines:
 
@@ -2495,8 +2448,6 @@ doc.table({
   </tbody>
 </table>
 
-
-
 ---
 
 # But you can provide a custom styler as well
@@ -2508,12 +2459,14 @@ doc.table({
   // Set the style for cells based on their column
   columnStyles: (i) => {
     if (i === 0) return { border: { left: 2 }, borderColor: { left: "black" } };
-    if (i === 2) return { border: { right: 2 }, borderColor: { right: "black" } };
+    if (i === 2)
+      return { border: { right: 2 }, borderColor: { right: "black" } };
   },
   // Set the style for cells based on their row
   rowStyles: (i) => {
     if (i === 0) return { border: { top: 2 }, borderColor: { top: "black" } };
-    if (i === 3) return { border: { bottom: 2 }, borderColor: { bottom: "black" } };
+    if (i === 3)
+      return { border: { bottom: 2 }, borderColor: { bottom: "black" } };
   },
   data: [
     ["Header 1", "Header 2", "Header 3"],
@@ -2521,7 +2474,7 @@ doc.table({
     ["Sample value 1", "Sample value 2", "Sample value 3"],
     ["Sample value 1", "Sample value 2", "Sample value 3"],
   ],
-})
+});
 ```
 
 <table>
@@ -2551,8 +2504,6 @@ doc.table({
   </tbody>
 </table>
 
-
-
 ---
 
 # Zebra style
@@ -2569,7 +2520,7 @@ doc.table({
     ["Sample value 1", "Sample value 2", "Sample value 3"],
     ["Sample value 1", "Sample value 2", "Sample value 3"],
   ],
-})
+});
 ```
 
 <table>
@@ -2608,8 +2559,6 @@ doc.table({
     </tr>
   </tbody>
 </table>
-
-
 
 ---
 
@@ -2681,8 +2630,6 @@ true
   </tbody>
 </table>
 
-
-
 ---
 
 ```javascript
@@ -2703,7 +2650,7 @@ doc.table({
     ["row 2"],
     ["row 3"],
   ],
-})
+});
 ```
 
 <table>
@@ -2728,8 +2675,6 @@ doc.table({
     </tr>
   </tbody>
 </table>
-
-
 
 ---
 
@@ -2809,9 +2754,9 @@ after
 
 **maxWidth** - The maximum width the table can expand to (defaults to the remaining content width (offset from the tables position))
 
-**columnStyles** - Column definitions of the table. (default *auto*)
+**columnStyles** - Column definitions of the table. (default _auto_)
 
-**rowStyles** - Row definitions of the table. (default *)
+**rowStyles** - Row definitions of the table. (default \*)
 
 **defaultStyle** - Defaults to apply to every cell
 
@@ -2823,35 +2768,35 @@ after
 
 # Cell options
 
-* **text** - The value, will be cast to a string (null and undefined are not rendered but the cell is still outlined)
+- **text** - The value, will be cast to a string (null and undefined are not rendered but the cell is still outlined)
 
-* **rowSpan** - How many rows this cell covers, follows the same logic as HTML rowspan
+- **rowSpan** - How many rows this cell covers, follows the same logic as HTML rowspan
 
-* **colSpan** - How many columns this cell covers, follows the same logic as HTML colspan
+- **colSpan** - How many columns this cell covers, follows the same logic as HTML colspan
 
-* **padding** - The padding for the cell (default 0.25em)
+- **padding** - The padding for the cell (default 0.25em)
 
-* **border** - The border for the cell (default 1pt)
+- **border** - The border for the cell (default 1pt)
 
-* **borderColor** - The border colors for the cell (default black)
+- **borderColor** - The border colors for the cell (default black)
 
-* **font** - Font options for the cell
+- **font** - Font options for the cell
 
-* **backgroundColor** - Set the background color of the cell
+- **backgroundColor** - Set the background color of the cell
 
-* **align** - The alignment of the cell text (default {x: 'left', y: 'top'})
+- **align** - The alignment of the cell text (default {x: 'left', y: 'top'})
 
-* **textStroke** - The text stroke (default 0)
+- **textStroke** - The text stroke (default 0)
 
-* **textStrokeColor** - Sets the text stroke color of the cells text (default black)
+- **textStrokeColor** - Sets the text stroke color of the cells text (default black)
 
-* **textColor** - Sets the text color of the cells text (default black)
+- **textColor** - Sets the text color of the cells text (default black)
 
-* **type** - Sets the cell type (for accessibility) (default TD)
+- **type** - Sets the cell type (for accessibility) (default TD)
 
-* **textOptions** - Sets any text options you wish to provide (such as rotation)
+- **textOptions** - Sets any text options you wish to provide (such as rotation)
 
-* **debug** - Whether to show the debug lines for the cell (default false)
+- **debug** - Whether to show the debug lines for the cell (default false)
 
 ---
 
@@ -2859,9 +2804,9 @@ after
 
 Extends the `cell options` above with:
 
-* **width** – The width of the column (default *)
-* **minWidth** – The minimum width of the column (default 0)
-* **maxWidth** – The maximum width of the column (default **Infinity**)
+- **width** – The width of the column (default \*)
+- **minWidth** – The minimum width of the column (default 0)
+- **maxWidth** – The maximum width of the column (default **Infinity**)
 
 ---
 
@@ -2869,9 +2814,9 @@ Extends the `cell options` above with:
 
 Extends the `cell options` above with:
 
-* `height` - The height of the row (default **auto**)
-* `minHeight` - The minimum height of the row (default **0**)
-* `maxHeight` - The maximum height of the row (default **Infinity**)
+- `height` - The height of the row (default **auto**)
+- `minHeight` - The minimum height of the row (default **0**)
+- `maxHeight` - The maximum height of the row (default **Infinity**)
 
 ---
 

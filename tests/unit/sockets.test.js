@@ -161,9 +161,15 @@ describe("sockets – no auth", function () {
 
     // client2 should NOT receive anything — wait 500ms to confirm
     let received = false;
-    client2.once("broadcast", () => { received = true; });
+    client2.once("broadcast", () => {
+      received = true;
+    });
     await new Promise((r) => setTimeout(r, 500));
-    assert.equal(received, false, "Should not broadcast a message with no tool");
+    assert.equal(
+      received,
+      false,
+      "Should not broadcast a message with no tool",
+    );
   });
 
   it("should tag Cursor messages with socket id", async function () {

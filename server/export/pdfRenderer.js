@@ -160,8 +160,8 @@ function computeBoundingBox(boardObj) {
       if (elem._children && elem._children.length) elem = elem._children[0];
       var ex = (elem.x || 0) + (elem.deltax | 0);
       var ey = (elem.y || 0) + (elem.deltay | 0);
-      if (elem.width) ex += (elem.width | 0);
-      if (elem.height) ey += (elem.height | 0);
+      if (elem.width) ex += elem.width | 0;
+      if (elem.height) ey += elem.height | 0;
       return {
         width: Math.max((ex + margin) | 0, dim.width),
         height: Math.max((ey + margin) | 0, dim.height),

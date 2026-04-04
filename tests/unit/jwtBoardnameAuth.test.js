@@ -43,7 +43,8 @@ describe("jwtBoardnameAuth", function () {
       delete require.cache[
         require.resolve("../../server/auth/jwtBoardnameAuth.js")
       ];
-      roleInBoard = require("../../server/auth/jwtBoardnameAuth.js").roleInBoard;
+      roleInBoard =
+        require("../../server/auth/jwtBoardnameAuth.js").roleInBoard;
       assert.equal(roleInBoard(null), "editor");
     });
 
@@ -104,20 +105,14 @@ describe("jwtBoardnameAuth", function () {
 
   describe("checkBoardnameInToken", function () {
     it("should not throw when user has access to the board", function () {
-      var token = jsonwebtoken.sign(
-        { roles: ["editor:myBoard"] },
-        SECRET,
-      );
+      var token = jsonwebtoken.sign({ roles: ["editor:myBoard"] }, SECRET);
       var url = new URL("http://localhost/boards/myBoard?token=" + token);
       // Should not throw
       checkBoardnameInToken(url, "myBoard");
     });
 
     it("should throw when user is forbidden from the board", function () {
-      var token = jsonwebtoken.sign(
-        { roles: ["editor:otherBoard"] },
-        SECRET,
-      );
+      var token = jsonwebtoken.sign({ roles: ["editor:otherBoard"] }, SECRET);
       var url = new URL("http://localhost/boards/secret?token=" + token);
       assert.throws(
         function () {

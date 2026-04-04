@@ -278,11 +278,19 @@ class BoardData {
     }
     if (item.hasOwnProperty("height")) {
       item.height = parseFloat(item.height) || 0;
-      item.height = Math.min(Math.max(item.height, 0), this.limits.maxBoardSize);
+      item.height = Math.min(
+        Math.max(item.height, 0),
+        this.limits.maxBoardSize,
+      );
     }
     if (item.hasOwnProperty("src")) {
       // Only allow relative image paths — no absolute URLs or protocols
-      if (typeof item.src !== "string" || !/^\/images\/[\w%\-_~()]+\/[a-f0-9]+\.(png|jpg|gif|webp)$/.test(item.src)) {
+      if (
+        typeof item.src !== "string" ||
+        !/^\/images\/[\w%\-_~()]+\/[a-f0-9]+\.(png|jpg|gif|webp)$/.test(
+          item.src,
+        )
+      ) {
         delete item.src;
       }
     }

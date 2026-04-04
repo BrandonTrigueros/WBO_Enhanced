@@ -43,7 +43,10 @@ describe("bookData", function () {
 
     it("should return existing metadata", async function () {
       var storage = createFakeStorage();
-      storage._files["meta-existing"] = { pageCount: 5, createdAt: "2026-01-01" };
+      storage._files["meta-existing"] = {
+        pageCount: 5,
+        createdAt: "2026-01-01",
+      };
       var api = createBookData(storage);
       var meta = await api.loadMeta("existing");
       assert.equal(meta.pageCount, 5);

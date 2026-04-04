@@ -17,7 +17,10 @@ var CircleRecognizer = {
     var y0 = inertia.centerY();
 
     for (var i = 0; i < points.length - 1; i++) {
-      var dm = Math.hypot(points[i + 1].x - points[i].x, points[i + 1].y - points[i].y);
+      var dm = Math.hypot(
+        points[i + 1].x - points[i].x,
+        points[i + 1].y - points[i].y,
+      );
       var deltar = Math.hypot(points[i].x - x0, points[i].y - y0) - r0;
       sum += dm * Math.abs(deltar);
     }

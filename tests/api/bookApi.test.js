@@ -25,11 +25,13 @@ function request(method, urlPath) {
       { hostname: "127.0.0.1", port: PORT, path: urlPath, method: method },
       function (res) {
         var body = "";
-        res.on("data", function (chunk) { body += chunk; });
+        res.on("data", function (chunk) {
+          body += chunk;
+        });
         res.on("end", function () {
           resolve({ statusCode: res.statusCode, body: body });
         });
-      }
+      },
     );
     req.on("error", reject);
     req.end();
@@ -61,7 +63,9 @@ before(async function () {
 
   server = require("../../server/server.js");
   // Wait a tick for server to start listening
-  await new Promise(function (r) { setTimeout(r, 300); });
+  await new Promise(function (r) {
+    setTimeout(r, 300);
+  });
 });
 
 after(function (_, done) {

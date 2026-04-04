@@ -22,7 +22,11 @@ var VALID_JPEG = Buffer.concat([
 ]);
 
 // GIF starts with GIF89a
-var VALID_GIF = Buffer.from("GIF89a" + "\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00!\xf9\x04\x00\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;", "binary");
+var VALID_GIF = Buffer.from(
+  "GIF89a" +
+    "\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00!\xf9\x04\x00\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;",
+  "binary",
+);
 
 // WEBP starts with RIFF....WEBP
 var VALID_WEBP = Buffer.concat([
@@ -185,7 +189,13 @@ describe("imageRouter", function () {
       assert.equal(res.statusCode, 400);
 
       function mockResponse() {
-        var r = { statusCode: null, writeHead: function (c) { r.statusCode = c; }, end: function () {} };
+        var r = {
+          statusCode: null,
+          writeHead: function (c) {
+            r.statusCode = c;
+          },
+          end: function () {},
+        };
         return r;
       }
     });
@@ -193,17 +203,29 @@ describe("imageRouter", function () {
     it("should return 404 for missing file", function (_, done) {
       var res = {
         statusCode: null,
-        writeHead: function (c) { res.statusCode = c; },
+        writeHead: function (c) {
+          res.statusCode = c;
+        },
         end: function () {
           assert.equal(res.statusCode, 404);
           done();
         },
       };
-      imageRouter.handleImageServe(["images", "nonexistent", "abc123.png"], {}, res);
+      imageRouter.handleImageServe(
+        ["images", "nonexistent", "abc123.png"],
+        {},
+        res,
+      );
     });
 
     it("should reject paths with too few segments", function () {
-      var res = { statusCode: null, writeHead: function (c) { res.statusCode = c; }, end: function () {} };
+      var res = {
+        statusCode: null,
+        writeHead: function (c) {
+          res.statusCode = c;
+        },
+        end: function () {},
+      };
       imageRouter.handleImageServe(["images", "boardonly"], {}, res);
       assert.equal(res.statusCode, 404);
     });

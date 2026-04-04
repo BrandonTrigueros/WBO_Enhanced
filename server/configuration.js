@@ -58,7 +58,8 @@ module.exports = {
   STATSD_URL: process.env["STATSD_URL"],
 
   /** Maximum upload size for embedded images (bytes). Default 5 MB. */
-  MAX_IMAGE_SIZE: parseInt(process.env["WBO_MAX_IMAGE_SIZE"]) || 5 * 1024 * 1024,
+  MAX_IMAGE_SIZE:
+    parseInt(process.env["WBO_MAX_IMAGE_SIZE"]) || 5 * 1024 * 1024,
 
   /** Allowed MIME types for image uploads */
   ALLOWED_IMAGE_TYPES: ["image/png", "image/jpeg", "image/gif", "image/webp"],

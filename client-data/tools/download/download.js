@@ -179,12 +179,24 @@
       // Full book export — format determines extension
       var bookEl = document.getElementById("bookConfig");
       var bookConfig = JSON.parse(bookEl.textContent);
-      return prefix + "/export/book/" + encodeURIComponent(bookConfig.bookUriComponent) + "." + selectedFormat;
+      return (
+        prefix +
+        "/export/book/" +
+        encodeURIComponent(bookConfig.bookUriComponent) +
+        "." +
+        selectedFormat
+      );
     }
 
     // Single board / single book page
     var boardName = Tools.boardName;
-    return prefix + "/export/board/" + encodeURIComponent(boardName) + "." + selectedFormat;
+    return (
+      prefix +
+      "/export/board/" +
+      encodeURIComponent(boardName) +
+      "." +
+      selectedFormat
+    );
   }
 
   /** Trigger a file download by creating a temporary link to a server URL */

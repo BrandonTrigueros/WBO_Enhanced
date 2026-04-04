@@ -18,40 +18,49 @@ function Inertia() {
   this.sxy = 0;
 }
 
-Inertia.prototype.centerX = function () { return this.sx / this.mass; };
-Inertia.prototype.centerY = function () { return this.sy / this.mass; };
+Inertia.prototype.centerX = function () {
+  return this.sx / this.mass;
+};
+Inertia.prototype.centerY = function () {
+  return this.sy / this.mass;
+};
 
 Inertia.prototype.xx = function () {
   if (this.mass <= 0) return 0;
-  return (this.sxx - this.sx * this.sx / this.mass) / this.mass;
+  return (this.sxx - (this.sx * this.sx) / this.mass) / this.mass;
 };
 
 Inertia.prototype.xy = function () {
   if (this.mass <= 0) return 0;
-  return (this.sxy - this.sx * this.sy / this.mass) / this.mass;
+  return (this.sxy - (this.sx * this.sy) / this.mass) / this.mass;
 };
 
 Inertia.prototype.yy = function () {
   if (this.mass <= 0) return 0;
-  return (this.syy - this.sy * this.sy / this.mass) / this.mass;
+  return (this.syy - (this.sy * this.sy) / this.mass) / this.mass;
 };
 
 Inertia.prototype.rad = function () {
-  var ixx = this.xx(), iyy = this.yy();
+  var ixx = this.xx(),
+    iyy = this.yy();
   if (ixx + iyy <= 0) return 0;
   return Math.sqrt(ixx + iyy);
 };
 
 /** Determinant: 0 = line, 1 = circle */
 Inertia.prototype.det = function () {
-  var ixx = this.xx(), iyy = this.yy(), ixy = this.xy();
+  var ixx = this.xx(),
+    iyy = this.yy(),
+    ixy = this.xy();
   if (this.mass <= 0) return 0;
   var sum = ixx + iyy;
   if (sum <= 0) return 0;
-  return 4 * (ixx * iyy - ixy * ixy) / (sum * sum);
+  return (4 * (ixx * iyy - ixy * ixy)) / (sum * sum);
 };
 
-Inertia.prototype.getMass = function () { return this.mass; };
+Inertia.prototype.getMass = function () {
+  return this.mass;
+};
 
 /** Add or remove an edge segment between p1 and p2 (coef = 1 or -1) */
 Inertia.prototype.increase = function (p1, p2, coef) {

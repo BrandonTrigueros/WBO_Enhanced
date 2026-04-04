@@ -90,11 +90,7 @@
       var steps = Math.max(1, Math.ceil(dist / 3));
       for (var i = 0; i <= steps; i++) {
         var t = i / steps;
-        eraseAtPoint(
-          lastClientX + dx * t,
-          lastClientY + dy * t,
-          deleted,
-        );
+        eraseAtPoint(lastClientX + dx * t, lastClientY + dy * t, deleted);
       }
     } else {
       eraseAtPoint(clientX, clientY, deleted);

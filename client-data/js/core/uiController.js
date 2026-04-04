@@ -146,9 +146,11 @@
 
     // Close when clicking outside
     document.addEventListener("click", function (e) {
-      if (!dropdown.classList.contains("hidden") &&
-          !dropdown.contains(e.target) &&
-          !toggle.contains(e.target)) {
+      if (
+        !dropdown.classList.contains("hidden") &&
+        !dropdown.contains(e.target) &&
+        !toggle.contains(e.target)
+      ) {
         dropdown.classList.add("hidden");
       }
     });

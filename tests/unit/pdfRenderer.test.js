@@ -4,7 +4,11 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { Writable } = require("stream");
-const { boardToPdf, bookToPdf, PX_TO_PT } = require("../../server/export/pdfRenderer.js");
+const {
+  boardToPdf,
+  bookToPdf,
+  PX_TO_PT,
+} = require("../../server/export/pdfRenderer.js");
 
 /** Collect a writable stream's output into a Buffer. */
 function collectStream() {
@@ -15,29 +19,63 @@ function collectStream() {
       cb();
     },
   });
-  stream.getBuffer = function () { return Buffer.concat(chunks); };
+  stream.getBuffer = function () {
+    return Buffer.concat(chunks);
+  };
   return stream;
 }
 
 var RECT_BOARD = {
-  r1: { id: "r1", x: 50, y: 50, x2: 300, y2: 200, tool: "Rectangle", color: "#ff0000", size: 3 },
+  r1: {
+    id: "r1",
+    x: 50,
+    y: 50,
+    x2: 300,
+    y2: 200,
+    tool: "Rectangle",
+    color: "#ff0000",
+    size: 3,
+  },
 };
 
 var LINE_BOARD = {
-  l1: { id: "l1", x: 10, y: 10, x2: 200, y2: 150, tool: "Straight line", color: "#000", size: 2 },
+  l1: {
+    id: "l1",
+    x: 10,
+    y: 10,
+    x2: 200,
+    y2: 150,
+    tool: "Straight line",
+    color: "#000",
+    size: 2,
+  },
 };
 
 var PENCIL_BOARD = {
   p1: {
-    id: "p1", tool: "Pencil", color: "#00f", size: 4,
+    id: "p1",
+    tool: "Pencil",
+    color: "#00f",
+    size: 4,
     _children: [
-      { x: 10, y: 10 }, { x: 50, y: 50 }, { x: 100, y: 30 }, { x: 150, y: 60 },
+      { x: 10, y: 10 },
+      { x: 50, y: 50 },
+      { x: 100, y: 30 },
+      { x: 150, y: 60 },
     ],
   },
 };
 
 var TEXT_BOARD = {
-  t1: { id: "t1", x: 100, y: 200, tool: "Text", txt: "Hello PDF", color: "#333", size: 14 },
+  t1: {
+    id: "t1",
+    x: 100,
+    y: 200,
+    tool: "Text",
+    txt: "Hello PDF",
+    color: "#333",
+    size: 14,
+  },
 };
 
 describe("pdfRenderer", function () {
@@ -53,7 +91,10 @@ describe("pdfRenderer", function () {
     it("should produce non-trivial output for Rectangle", async function () {
       var stream = collectStream();
       await boardToPdf(RECT_BOARD, stream);
-      assert.ok(stream.getBuffer().length > 200, "PDF should have substantial size");
+      assert.ok(
+        stream.getBuffer().length > 200,
+        "PDF should have substantial size",
+      );
     });
 
     it("should produce PDF for Pencil paths", async function () {
@@ -99,12 +140,27 @@ describe("pdfRenderer", function () {
       await boardToPdf({}, stream);
       var buf = stream.getBuffer();
       var header = buf.slice(0, 5).toString("ascii");
-      assert.equal(header, "%PDF-", "empty board should still produce valid PDF");
+      assert.equal(
+        header,
+        "%PDF-",
+        "empty board should still produce valid PDF",
+      );
     });
 
     it("should handle elements with deltax/deltay transforms", async function () {
       var board = {
-        r1: { id: "r1", x: 10, y: 10, x2: 100, y2: 100, tool: "Rectangle", color: "#000", size: 1, deltax: 50, deltay: 30 },
+        r1: {
+          id: "r1",
+          x: 10,
+          y: 10,
+          x2: 100,
+          y2: 100,
+          tool: "Rectangle",
+          color: "#000",
+          size: 1,
+          deltax: 50,
+          deltay: 30,
+        },
       };
       var stream = collectStream();
       await boardToPdf(board, stream);
@@ -114,7 +170,17 @@ describe("pdfRenderer", function () {
 
     it("should handle elements with opacity", async function () {
       var board = {
-        r1: { id: "r1", x: 10, y: 10, x2: 100, y2: 100, tool: "Rectangle", color: "#000", size: 1, opacity: 0.5 },
+        r1: {
+          id: "r1",
+          x: 10,
+          y: 10,
+          x2: 100,
+          y2: 100,
+          tool: "Rectangle",
+          color: "#000",
+          size: 1,
+          opacity: 0.5,
+        },
       };
       var stream = collectStream();
       await boardToPdf(board, stream);
@@ -157,7 +223,15 @@ describe("pdfRenderer", function () {
   describe("Image element", function () {
     it("should produce PDF for board with Image element (missing file gracefully skipped)", async function () {
       var board = {
-        img1: { id: "img1", x: 100, y: 100, width: 300, height: 200, tool: "Image", src: "/images/test/nonexistent.png" },
+        img1: {
+          id: "img1",
+          x: 100,
+          y: 100,
+          width: 300,
+          height: 200,
+          tool: "Image",
+          src: "/images/test/nonexistent.png",
+        },
       };
       var stream = collectStream();
       await boardToPdf(board, stream);

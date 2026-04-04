@@ -43,7 +43,7 @@ class BookStorage {
   metaFilePath(bookName) {
     return path.join(
       this.historyDir,
-      "book-meta-" + encodeURIComponent(bookName) + ".json"
+      "book-meta-" + encodeURIComponent(bookName) + ".json",
     );
   }
 
@@ -54,7 +54,10 @@ class BookStorage {
    */
   async readMeta(bookName) {
     try {
-      var data = await fs.promises.readFile(this.metaFilePath(bookName), "utf8");
+      var data = await fs.promises.readFile(
+        this.metaFilePath(bookName),
+        "utf8",
+      );
       return JSON.parse(data);
     } catch (err) {
       if (err.code === "ENOENT") return null;
@@ -71,7 +74,7 @@ class BookStorage {
     await fs.promises.writeFile(
       this.metaFilePath(bookName),
       JSON.stringify(meta),
-      "utf8"
+      "utf8",
     );
   }
 
@@ -86,7 +89,7 @@ class BookStorage {
   pageBoardFilePath(bookName, pageNum) {
     return path.join(
       this.historyDir,
-      "board-" + encodeURIComponent(pageBoardName(bookName, pageNum)) + ".json"
+      "board-" + encodeURIComponent(pageBoardName(bookName, pageNum)) + ".json",
     );
   }
 
@@ -115,7 +118,7 @@ class BookStorage {
     try {
       await fs.promises.rename(
         this.pageBoardFilePath(bookName, fromPage),
-        this.pageBoardFilePath(bookName, toPage)
+        this.pageBoardFilePath(bookName, toPage),
       );
     } catch (e) {
       if (e.code !== "ENOENT") throw e;

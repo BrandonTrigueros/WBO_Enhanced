@@ -124,8 +124,7 @@ function exportBoardSvg(boardName, response) {
     .then(function (svg) {
       response.writeHead(200, {
         "Content-Type": "image/svg+xml",
-        "Content-Disposition":
-          'attachment; filename="' + boardName + '.svg"',
+        "Content-Disposition": 'attachment; filename="' + boardName + '.svg"',
       });
       response.end(svg);
     })
@@ -146,8 +145,7 @@ function exportBoardPng(boardName, response) {
       response.writeHead(200, {
         "Content-Type": "image/png",
         "Content-Length": pngBuf.length,
-        "Content-Disposition":
-          'attachment; filename="' + boardName + '.png"',
+        "Content-Disposition": 'attachment; filename="' + boardName + '.png"',
       });
       response.end(pngBuf);
     })
@@ -161,8 +159,7 @@ function exportBoardPdf(boardName, response, opts) {
     .then(function (boardObj) {
       response.writeHead(200, {
         "Content-Type": "application/pdf",
-        "Content-Disposition":
-          'attachment; filename="' + boardName + '.pdf"',
+        "Content-Disposition": 'attachment; filename="' + boardName + '.pdf"',
       });
       return boardToPdf(boardObj, response, opts);
     })
@@ -261,8 +258,7 @@ function exportBookPdf(bookName, response) {
       }
       response.writeHead(200, {
         "Content-Type": "application/pdf",
-        "Content-Disposition":
-          'attachment; filename="' + bookName + '.pdf"',
+        "Content-Disposition": 'attachment; filename="' + bookName + '.pdf"',
       });
       return bookToPdf(validObjects, response);
     })
@@ -295,7 +291,9 @@ function exportBookSvgZip(bookName, response) {
       return Promise.all(promises);
     })
     .then(function (pages) {
-      var validPages = pages.filter(function (p) { return p !== null; });
+      var validPages = pages.filter(function (p) {
+        return p !== null;
+      });
       if (validPages.length === 0) {
         sendError(response, 404, "No pages found for this book");
         return;
@@ -308,7 +306,9 @@ function exportBookSvgZip(bookName, response) {
       var archive = archiver("zip", { zlib: { level: 6 } });
       archive.pipe(response);
       validPages.forEach(function (page) {
-        archive.append(page.data, { name: bookName + "-p" + page.pageNum + ".svg" });
+        archive.append(page.data, {
+          name: bookName + "-p" + page.pageNum + ".svg",
+        });
       });
       archive.finalize();
     })
@@ -341,7 +341,9 @@ function exportBookPngZip(bookName, response) {
       return Promise.all(promises);
     })
     .then(function (pages) {
-      var validPages = pages.filter(function (p) { return p !== null; });
+      var validPages = pages.filter(function (p) {
+        return p !== null;
+      });
       if (validPages.length === 0) {
         sendError(response, 404, "No pages found for this book");
         return;
@@ -354,7 +356,9 @@ function exportBookPngZip(bookName, response) {
       var archive = archiver("zip", { zlib: { level: 6 } });
       archive.pipe(response);
       validPages.forEach(function (page) {
-        archive.append(page.data, { name: bookName + "-p" + page.pageNum + ".png" });
+        archive.append(page.data, {
+          name: bookName + "-p" + page.pageNum + ".png",
+        });
       });
       archive.finalize();
     })

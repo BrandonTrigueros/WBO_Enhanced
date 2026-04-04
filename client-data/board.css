@@ -4,12 +4,23 @@
    ===================================================== */
 
 /* ---------- Reset & base ---------- */
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-html, body, svg {
+html,
+body,
+svg {
   padding: 0;
   margin: 0;
-  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family:
+    "Inter",
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 body {
@@ -41,8 +52,10 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2000;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
-  transition: opacity .4s, transform .4s;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
+  transition:
+    opacity 0.4s,
+    transform 0.4s;
 }
 #loadingMessage.hidden {
   opacity: 0;
@@ -50,14 +63,18 @@ body {
   transform: translate(-50%, -50%) scale(0.96);
   z-index: -1;
 }
-#loadingMessage::after { content: "…"; }
+#loadingMessage::after {
+  content: "…";
+}
 
 /* ===================================================
    FLOATING GLASSMORPHISM TOOLBAR
    =================================================== */
 
 /* Hide scrollbar (legacy compat) */
-#menu::-webkit-scrollbar { display: none; }
+#menu::-webkit-scrollbar {
+  display: none;
+}
 
 #menu {
   -ms-overflow-style: none;
@@ -71,18 +88,20 @@ body {
   background: rgba(22, 22, 38, 0.72);
   backdrop-filter: blur(22px) saturate(170%);
   -webkit-backdrop-filter: blur(22px) saturate(170%);
-  border: 1px solid rgba(255,255,255,0.10);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
   padding: 5px 10px;
   box-shadow:
-    0 8px 40px rgba(0,0,0,0.22),
-    inset 0 0 0 1px rgba(255,255,255,0.06);
+    0 8px 40px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   color: #fff;
   cursor: default;
   max-height: none;
   overflow: visible;
   font-size: 14px;
-  transition: opacity .3s, bottom .3s;
+  transition:
+    opacity 0.3s,
+    bottom 0.3s;
 }
 
 /* Collapsed state (kept for JS compat) */
@@ -92,7 +111,9 @@ body {
   bottom: -80px;
 }
 
-#menu h2 { display: none; }
+#menu h2 {
+  display: none;
+}
 
 /* Inner flex container */
 #menuItems {
@@ -132,38 +153,48 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background .15s, transform .12s;
+  transition:
+    background 0.15s,
+    transform 0.12s;
   overflow: hidden;
   box-shadow: none;
 }
 
 #menu .tool:hover {
-  background: rgba(255,255,255,0.10);
+  background: rgba(255, 255, 255, 0.1);
   max-width: 38px;
 }
 
 #menu .tool:active {
-  transform: scale(0.90);
-  background: rgba(255,255,255,0.16);
+  transform: scale(0.9);
+  background: rgba(255, 255, 255, 0.16);
   box-shadow: none;
 }
 
 #menu .oneTouch:active {
-  background: rgba(255,255,255,0.18);
+  background: rgba(255, 255, 255, 0.18);
 }
 
 /* Active (selected) tool */
 #menu .tool.curTool {
-  background: rgba(80,170,255,0.28);
-  box-shadow: inset 0 0 0 1.5px rgba(100,180,255,0.55);
+  background: rgba(80, 170, 255, 0.28);
+  box-shadow: inset 0 0 0 1.5px rgba(100, 180, 255, 0.55);
 }
 
 /* Touch-device overrides — keep buttons compact */
 @media (hover: none), (pointer: coarse) {
-  #menu .tool:hover  { max-width: 38px; }
-  #menu .tool:focus  { max-width: 38px; }
-  #menu              { pointer-events: auto; }
-  #menu:focus-within { pointer-events: auto; }
+  #menu .tool:hover {
+    max-width: 38px;
+  }
+  #menu .tool:focus {
+    max-width: 38px;
+  }
+  #menu {
+    pointer-events: auto;
+  }
+  #menu:focus-within {
+    pointer-events: auto;
+  }
 }
 
 /* ---------- Tool icon ---------- */
@@ -179,7 +210,7 @@ body {
 
 #menu img.tool-icon {
   pointer-events: none;
-  filter: brightness(0) invert(1);   /* white icons on dark toolbar */
+  filter: brightness(0) invert(1); /* white icons on dark toolbar */
 }
 
 #menu .tool-icon > * {
@@ -193,7 +224,9 @@ body {
 }
 
 /* Secondary icon badge */
-#menu .tool .tool-icon.secondaryIcon { display: none; }
+#menu .tool .tool-icon.secondaryIcon {
+  display: none;
+}
 
 #menu .tool.hasSecondary .tool-icon.secondaryIcon {
   display: block;
@@ -204,7 +237,9 @@ body {
   height: 10px;
   filter: brightness(0) invert(1);
 }
-#menu .tool.hasSecondary .tool-icon { margin: 0; }
+#menu .tool.hasSecondary .tool-icon {
+  margin: 0;
+}
 
 /* ===================================================
    SETTINGS SECTION (color / size / opacity)
@@ -213,7 +248,7 @@ body {
   margin: 0;
   padding-left: 6px;
   margin-left: 4px;
-  border-left: 1px solid rgba(255,255,255,0.12);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 /* -- Color tool -- */
@@ -232,7 +267,7 @@ body {
   width: 28px;
   height: 28px;
   min-width: 28px;
-  border: 2px solid rgba(255,255,255,0.28);
+  border: 2px solid rgba(255, 255, 255, 0.28);
   border-radius: 50%;
   padding: 0;
   margin: 0;
@@ -244,9 +279,17 @@ body {
   display: block;
   flex-shrink: 0;
 }
-#chooseColor::-webkit-color-swatch-wrapper { padding: 0; }
-#chooseColor::-webkit-color-swatch { border: none; border-radius: 50%; }
-#chooseColor::-moz-color-swatch { border: none; border-radius: 50%; }
+#chooseColor::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+#chooseColor::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+#chooseColor::-moz-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
 
 /* Dropdown arrow button — blends with toolbar */
 .paletteBtn {
@@ -259,15 +302,17 @@ body {
   background: transparent;
   border: none;
   border-radius: 6px;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255, 255, 255, 0.55);
   font-size: 11px;
   line-height: 1;
   cursor: pointer;
   padding: 0;
-  transition: background 0.12s, color 0.12s;
+  transition:
+    background 0.12s,
+    color 0.12s;
 }
 .paletteBtn:hover {
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   color: #fff;
 }
 
@@ -284,18 +329,21 @@ body {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.22);
+  border: 2px solid rgba(255, 255, 255, 0.22);
   display: inline-block;
   margin: 0;
   padding: 0;
   cursor: pointer;
-  transition: transform .12s, border-color .12s, box-shadow .12s;
+  transition:
+    transform 0.12s,
+    border-color 0.12s,
+    box-shadow 0.12s;
   vertical-align: middle;
 }
 .colorPresetButton:hover {
   transform: scale(1.25);
-  border-color: rgba(255,255,255,0.7);
-  box-shadow: 0 0 6px rgba(255,255,255,0.3);
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
 }
 
 /* Dropdown popup */
@@ -307,10 +355,10 @@ body {
   background: rgba(22, 22, 38, 0.92);
   backdrop-filter: blur(22px) saturate(170%);
   -webkit-backdrop-filter: blur(22px) saturate(170%);
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
   padding: 4px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   z-index: 1100;
   min-width: 120px;
   max-width: 180px;
@@ -329,7 +377,9 @@ body {
   height: 38px;
 }
 /* Hide the old size icon image */
-#settings > .tool:nth-child(2) > img.tool-icon { display: none; }
+#settings > .tool:nth-child(2) > img.tool-icon {
+  display: none;
+}
 /* Show the slider label but hide the text */
 #settings > .tool:nth-child(2) .tool-name {
   display: flex;
@@ -342,7 +392,9 @@ body {
   vertical-align: middle;
   line-height: normal;
 }
-#settings > .tool:nth-child(2) .tool-name > span { display: none; }
+#settings > .tool:nth-child(2) .tool-name > span {
+  display: none;
+}
 
 /* -- Opacity tool -- */
 #settings > .tool:nth-child(3) {
@@ -371,7 +423,9 @@ body {
   vertical-align: middle;
   line-height: normal;
 }
-#settings > .tool:nth-child(3) .tool-name > span { display: none; }
+#settings > .tool:nth-child(3) .tool-name > span {
+  display: none;
+}
 
 /* ===================================================
    RANGE INPUTS (modern custom sliders)
@@ -381,7 +435,7 @@ body {
   appearance: none;
   width: 72px;
   height: 4px;
-  background: rgba(255,255,255,0.22);
+  background: rgba(255, 255, 255, 0.22);
   border-radius: 2px;
   outline: none;
   border: 0;
@@ -396,10 +450,12 @@ body {
   border-radius: 50%;
   background: #fff;
   cursor: pointer;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.35);
-  transition: transform .1s;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
+  transition: transform 0.1s;
 }
-.rangeChooser::-webkit-slider-thumb:hover { transform: scale(1.18); }
+.rangeChooser::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+}
 .rangeChooser::-moz-range-thumb {
   width: 14px;
   height: 14px;
@@ -407,11 +463,11 @@ body {
   background: #fff;
   cursor: pointer;
   border: none;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.35);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
 }
 .rangeChooser::-moz-range-track {
   height: 4px;
-  background: rgba(255,255,255,0.22);
+  background: rgba(255, 255, 255, 0.22);
   border-radius: 2px;
   border: none;
 }
@@ -453,12 +509,18 @@ circle.opcursor.cursor-hidden {
 /* ===================================================
    INPUT RESET
    =================================================== */
-input { font-size: 16px; }
+input {
+  font-size: 16px;
+}
 
 /* IE-specific */
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-  #chooseColor { color: transparent; }
-  label.tool-name[for="chooseColor"] { line-height: 10px; }
+  #chooseColor {
+    color: transparent;
+  }
+  label.tool-name[for="chooseColor"] {
+    line-height: 10px;
+  }
 }
 
 /* ===================================================
@@ -495,7 +557,9 @@ input { font-size: 16px; }
     height: 22px;
     font-size: 9px;
   }
-  .rangeChooser { width: 54px; }
+  .rangeChooser {
+    width: 54px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -513,7 +577,7 @@ input { font-size: 16px; }
     border-left: none;
     padding-left: 0;
     margin-left: 0;
-    border-top: 1px solid rgba(255,255,255,0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
     padding-top: 4px;
     margin-top: 2px;
   }
@@ -527,21 +591,24 @@ input { font-size: 16px; }
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
   justify-content: center;
   align-items: center;
 }
-#exportOverlay.visible { display: flex; }
+#exportOverlay.visible {
+  display: flex;
+}
 
 #exportPopup {
-  background: rgba(255,255,255,0.92);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 16px;
   padding: 24px 28px;
   min-width: 260px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #222;
 }
 #exportPopup h3 {
@@ -574,11 +641,13 @@ input { font-size: 16px; }
   cursor: pointer;
   transition: all 0.15s;
 }
-.export-options button:hover { border-color: #888; }
+.export-options button:hover {
+  border-color: #888;
+}
 .export-options button.selected {
-  border-color: #1913B0;
+  border-color: #1913b0;
   background: #eef;
-  color: #1913B0;
+  color: #1913b0;
 }
 #exportDownloadBtn {
   width: 100%;
@@ -586,14 +655,16 @@ input { font-size: 16px; }
   margin-top: 4px;
   border: none;
   border-radius: 10px;
-  background: #1913B0;
+  background: #1913b0;
   color: #fff;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
 }
-#exportDownloadBtn:hover { background: #130e8a; }
+#exportDownloadBtn:hover {
+  background: #130e8a;
+}
 #exportDownloadBtn:disabled {
   background: #999;
   cursor: not-allowed;
@@ -609,4 +680,6 @@ input { font-size: 16px; }
   font-size: 13px;
   cursor: pointer;
 }
-#exportCancelBtn:hover { color: #222; }
+#exportCancelBtn:hover {
+  color: #222;
+}

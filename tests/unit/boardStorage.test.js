@@ -98,10 +98,7 @@ describe("BoardStorage", function () {
       });
       assert.ok(backupFiles.length >= 1, "Expected at least one backup file");
 
-      var content = fs.readFileSync(
-        path.join(tmpDir, backupFiles[0]),
-        "utf8"
-      );
+      var content = fs.readFileSync(path.join(tmpDir, backupFiles[0]), "utf8");
       assert.equal(content, "corrupt data");
     });
   });

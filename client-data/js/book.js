@@ -10,7 +10,7 @@
 
   // ---- Config from server-injected JSON ----
   var bookConfig = JSON.parse(
-    document.getElementById("bookConfig").textContent
+    document.getElementById("bookConfig").textContent,
   );
   var bookName = bookConfig.bookName;
   var bookUri = bookConfig.bookUriComponent;
@@ -88,7 +88,9 @@
     if (page < 1 || page > pageCount) return;
 
     // Fire pre-switch hooks (e.g. sidebar refresh of leaving page)
-    pageHooks.onBeforeSwitch.forEach(function (fn) { fn(currentPage, page); });
+    pageHooks.onBeforeSwitch.forEach(function (fn) {
+      fn(currentPage, page);
+    });
 
     currentPage = page;
 
@@ -119,7 +121,9 @@
     window.history.replaceState({}, "", url.toString());
 
     // Fire post-switch hooks (e.g. sidebar highlight)
-    pageHooks.onAfterSwitch.forEach(function (fn) { fn(currentPage); });
+    pageHooks.onAfterSwitch.forEach(function (fn) {
+      fn(currentPage);
+    });
   }
 
   // ---- Event handlers ----
@@ -219,9 +223,15 @@
   if (Tools.pageSidebar) {
     Tools.pageSidebar.init({
       pageBoardName: pageBoardName,
-      getPageCount: function () { return pageCount; },
-      getCurrentPage: function () { return currentPage; },
-      onPageClick: function (num) { switchToPage(num); },
+      getPageCount: function () {
+        return pageCount;
+      },
+      getCurrentPage: function () {
+        return currentPage;
+      },
+      onPageClick: function (num) {
+        switchToPage(num);
+      },
     });
 
     pageHooks.onBeforeSwitch.push(function (leavingPage) {

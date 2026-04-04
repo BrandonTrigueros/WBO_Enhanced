@@ -48,8 +48,12 @@
 
       /** Drawing tools that should only respond to stylus, not finger */
       var drawingToolNames = {
-        "Pencil": true, "Straight line": true, "Rectangle": true,
-        "Ellipse": true, "Text": true, "Eraser": true,
+        Pencil: true,
+        "Straight line": true,
+        Rectangle: true,
+        Ellipse: true,
+        Text: true,
+        Eraser: true,
       };
 
       function compileTouch(listener) {
@@ -61,8 +65,10 @@
             // should pan (let browser handle it), not draw.
             // touchType is "stylus" for Apple Pencil, "direct" for finger.
             // If touchType is undefined (non-Apple), fall through normally.
-            if (touch.touchType === "direct" &&
-                drawingToolNames[Tools.curTool && Tools.curTool.name]) {
+            if (
+              touch.touchType === "direct" &&
+              drawingToolNames[Tools.curTool && Tools.curTool.name]
+            ) {
               return true; // let browser handle native scroll/pan
             }
 
@@ -96,9 +102,7 @@
 
       if (listeners.press) {
         compiled["mousedown"] = wrapUnsetHover(compile(listeners.press));
-        compiled["touchstart"] = wrapUnsetHover(
-          compileTouch(listeners.press),
-        );
+        compiled["touchstart"] = wrapUnsetHover(compileTouch(listeners.press));
       }
       if (listeners.move) {
         compiled["mousemove"] = compile(listeners.move);

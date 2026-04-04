@@ -139,7 +139,11 @@ a {
 
 #recent-boards {
   border-radius: 15px;
-  background: linear-gradient(135deg, rgba(204, 223, 223, 0.6), rgba(171, 198, 198, 0.4));
+  background: linear-gradient(
+    135deg,
+    rgba(204, 223, 223, 0.6),
+    rgba(171, 198, 198, 0.4)
+  );
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -179,7 +183,9 @@ a {
   background: rgba(255, 255, 255, 0.7);
   border: 2px solid transparent;
   padding: 6px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .preview-card:hover {
@@ -372,7 +378,11 @@ footer a:hover {
 
 #recent-books {
   border-radius: 15px;
-  background: linear-gradient(135deg, rgba(221, 213, 243, 0.6), rgba(184, 169, 217, 0.4));
+  background: linear-gradient(
+    135deg,
+    rgba(221, 213, 243, 0.6),
+    rgba(184, 169, 217, 0.4)
+  );
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.3);

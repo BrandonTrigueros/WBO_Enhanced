@@ -4,19 +4,19 @@ An enhanced collaborative whiteboard built on top of [WBO (Whitebophir)](https:/
 
 ## Features
 
-| Feature | Description |
-|---------|-------------|
-| **Infinite boards** | Classic WBO free-form canvas — draw anywhere, canvas grows as needed |
-| **A4 Notebook mode** | Paginated A4 books with add/delete pages and a thumbnail sidebar |
-| **Shape auto-detection** | Freehand strokes snap into clean lines, rectangles, triangles, and circles on pen-up (Xournal++ inertia-tensor algorithm) |
-| **PDF / Image export** | Export a single board or an entire book as PDF, PNG, or SVG |
-| **Image embedding** | Drag-and-drop raster images onto the canvas — resizable, synced to all clients |
-| **Ruled backgrounds** | Narrow-ruled and wide-ruled line backgrounds alongside dots and grid |
-| **Collapsible palette** | Color picker collapses to a single swatch; expands on tap |
-| **Landing page** | Thumbnail previews of recent boards and books |
-| **Tablet support** | Finger pans the canvas, stylus draws; hand tool works on iPad |
-| **Real-time collaboration** | Socket.IO sync — every stroke is broadcast and persisted |
-| **JWT authentication** | Optional role-based access (moderator / editor) per board |
+| Feature                     | Description                                                                                                               |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Infinite boards**         | Classic WBO free-form canvas — draw anywhere, canvas grows as needed                                                      |
+| **A4 Notebook mode**        | Paginated A4 books with add/delete pages and a thumbnail sidebar                                                          |
+| **Shape auto-detection**    | Freehand strokes snap into clean lines, rectangles, triangles, and circles on pen-up (Xournal++ inertia-tensor algorithm) |
+| **PDF / Image export**      | Export a single board or an entire book as PDF, PNG, or SVG                                                               |
+| **Image embedding**         | Drag-and-drop raster images onto the canvas — resizable, synced to all clients                                            |
+| **Ruled backgrounds**       | Narrow-ruled and wide-ruled line backgrounds alongside dots and grid                                                      |
+| **Collapsible palette**     | Color picker collapses to a single swatch; expands on tap                                                                 |
+| **Landing page**            | Thumbnail previews of recent boards and books                                                                             |
+| **Tablet support**          | Finger pans the canvas, stylus draws; hand tool works on iPad                                                             |
+| **Real-time collaboration** | Socket.IO sync — every stroke is broadcast and persisted                                                                  |
+| **JWT authentication**      | Optional role-based access (moderator / editor) per board                                                                 |
 
 ## Quick Start (Docker)
 
@@ -74,13 +74,13 @@ WBO_Enhanced/
 
 WBO reads configuration from environment variables. Key settings (see [`server/configuration.js`](./server/configuration.js) for the full list):
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `PORT` | `8080` | HTTP listen port |
-| `HOST` | `0.0.0.0` | Bind address |
-| `WBO_HISTORY_DIR` | `./server-data/` | Board persistence directory |
-| `WBO_MAX_EMIT_COUNT` | `192` | Max messages per 4 s (higher = smoother) |
-| `AUTH_SECRET_KEY` | *(none)* | JWT secret for authenticated boards |
+| Variable             | Default          | Description                              |
+| -------------------- | ---------------- | ---------------------------------------- |
+| `PORT`               | `8080`           | HTTP listen port                         |
+| `HOST`               | `0.0.0.0`        | Bind address                             |
+| `WBO_HISTORY_DIR`    | `./server-data/` | Board persistence directory              |
+| `WBO_MAX_EMIT_COUNT` | `192`            | Max messages per 4 s (higher = smoother) |
+| `AUTH_SECRET_KEY`    | _(none)_         | JWT secret for authenticated boards      |
 
 ## Authentication
 
@@ -100,12 +100,12 @@ Roles: `moderator` (can clear board), `editor` (can draw — default for all use
 
 ## Export & Preview
 
-| Endpoint | Description |
-|----------|-------------|
-| `GET /preview/{boardName}` | SVG preview of a board |
-| `GET /api/export/pdf/{boardName}` | PDF download |
-| `GET /api/export/png/{boardName}` | PNG download |
-| Book export (UI button) | Multi-page PDF of all pages |
+| Endpoint                          | Description                 |
+| --------------------------------- | --------------------------- |
+| `GET /preview/{boardName}`        | SVG preview of a board      |
+| `GET /api/export/pdf/{boardName}` | PDF download                |
+| `GET /api/export/png/{boardName}` | PNG download                |
+| Book export (UI button)           | Multi-page PDF of all pages |
 
 ## Tests
 
@@ -117,19 +117,19 @@ npm run test:api    # API only
 
 ## Keyboard Shortcuts
 
-| Key | Tool |
-|-----|------|
-| `p` | Pencil |
-| `h` | Hand / Selector |
-| `e` | Eraser |
-| `l` | Straight line |
-| `r` | Rectangle |
-| `c` | Ellipse |
-| `t` | Text |
-| `z` | Zoom |
-| `1`–`0` | Color presets |
-| `Ctrl+Scroll` | Zoom in/out |
-| `Alt+Scroll` | Change tool size |
+| Key           | Tool             |
+| ------------- | ---------------- |
+| `p`           | Pencil           |
+| `h`           | Hand / Selector  |
+| `e`           | Eraser           |
+| `l`           | Straight line    |
+| `r`           | Rectangle        |
+| `c`           | Ellipse          |
+| `t`           | Text             |
+| `z`           | Zoom             |
+| `1`–`0`       | Color presets    |
+| `Ctrl+Scroll` | Zoom in/out      |
+| `Alt+Scroll`  | Change tool size |
 
 ## Credits
 

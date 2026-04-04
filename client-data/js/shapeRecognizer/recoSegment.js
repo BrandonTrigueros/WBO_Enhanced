@@ -18,8 +18,9 @@ function RecoSegment() {
 
 /** Find the intersection of two segment edges (line-line in 2D) */
 RecoSegment.prototype.calcEdgeIsect = function (r2) {
-  var t = (r2.xcenter - this.xcenter) * Math.sin(r2.angle)
-        - (r2.ycenter - this.ycenter) * Math.cos(r2.angle);
+  var t =
+    (r2.xcenter - this.xcenter) * Math.sin(r2.angle) -
+    (r2.ycenter - this.ycenter) * Math.cos(r2.angle);
   t /= Math.sin(r2.angle - this.angle);
   var x = this.xcenter + t * Math.cos(this.angle);
   var y = this.ycenter + t * Math.sin(this.angle);
@@ -27,7 +28,12 @@ RecoSegment.prototype.calcEdgeIsect = function (r2) {
 };
 
 /** Compute geometry (center, angle, endpoints) from inertia tensor */
-RecoSegment.prototype.calcSegmentGeometry = function (points, start, end, inertia) {
+RecoSegment.prototype.calcSegmentGeometry = function (
+  points,
+  start,
+  end,
+  inertia,
+) {
   this.xcenter = inertia.centerX();
   this.ycenter = inertia.centerY();
   var a = inertia.xx();
@@ -37,10 +43,12 @@ RecoSegment.prototype.calcSegmentGeometry = function (points, start, end, inerti
   this.angle = Math.atan2(2 * b, a - c) / 2;
   this.radius = Math.sqrt(3 * (a + c));
 
-  var lmin = 0, lmax = 0;
+  var lmin = 0,
+    lmax = 0;
   for (var i = start; i <= end; i++) {
-    var l = (points[i].x - this.xcenter) * Math.cos(this.angle)
-          + (points[i].y - this.ycenter) * Math.sin(this.angle);
+    var l =
+      (points[i].x - this.xcenter) * Math.cos(this.angle) +
+      (points[i].y - this.ycenter) * Math.sin(this.angle);
     if (l < lmin) lmin = l;
     if (l > lmax) lmax = l;
   }

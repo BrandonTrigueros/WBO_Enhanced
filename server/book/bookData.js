@@ -112,9 +112,15 @@ async function deletePage(storage, bookName, pageNum) {
  */
 function buildApi(storage) {
   return {
-    loadMeta: function (bookName) { return loadMeta(storage, bookName); },
-    addPage: function (bookName) { return addPage(storage, bookName); },
-    deletePage: function (bookName, pageNum) { return deletePage(storage, bookName, pageNum); },
+    loadMeta: function (bookName) {
+      return loadMeta(storage, bookName);
+    },
+    addPage: function (bookName) {
+      return addPage(storage, bookName);
+    },
+    deletePage: function (bookName, pageNum) {
+      return deletePage(storage, bookName, pageNum);
+    },
     pageBoardName: pageBoardName,
     storage: storage,
   };
