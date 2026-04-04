@@ -1,6 +1,6 @@
 {
-  "name": "whitebophir",
-  "description": "Online collaborative whiteboard",
+  "name": "wbo-enhanced",
+  "description": "Enhanced collaborative whiteboard with A4 notebooks, shape recognition, and export",
   "version": "1.22.1",
   "keywords": [
     "collaborative",
@@ -33,7 +33,7 @@
   "main": "./server/server.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/lovasoa/whitebophir.git"
+    "url": "https://github.com/BrandonTrigueros/WBO_Enhanced.git"
   },
   "devDependencies": {
     "geckodriver": "^4.2.1",
