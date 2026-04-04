@@ -41,10 +41,12 @@
   function zoom(origin, scale) {
     var oldScale = origin.scale;
     var newScale = Tools.setScale(scale);
-    window.scrollTo(
-      origin.scrollX + origin.x * (newScale - oldScale),
-      origin.scrollY + origin.y * (newScale - oldScale),
-    );
+    if (!Tools.isBookMode) {
+      window.scrollTo(
+        origin.scrollX + origin.x * (newScale - oldScale),
+        origin.scrollY + origin.y * (newScale - oldScale),
+      );
+    }
   }
 
   var animation = null;
@@ -82,7 +84,6 @@
   }
 
   function onwheel(evt) {
-    evt.preventDefault();
     var multiplier =
       evt.deltaMode === WheelEvent.DOM_DELTA_LINE
         ? 30
@@ -91,30 +92,23 @@
           : 1;
     var deltaX = evt.deltaX * multiplier,
       deltaY = evt.deltaY * multiplier;
-    if (!evt.ctrlKey) {
-      // zoom
+    if (evt.ctrlKey) {
+      // Ctrl+Scroll = zoom
+      evt.preventDefault();
       var scale = Tools.getScale();
       var x = evt.pageX / scale;
       var y = evt.pageY / scale;
       setOrigin(x, y, evt, false);
       animate((1 - deltaY / 800) * Tools.getScale());
     } else if (evt.altKey) {
-      // make finer changes if shift is being held
+      // Alt+Scroll = change tool size (Shift for finer control)
+      evt.preventDefault();
       var change = evt.shiftKey ? 1 : 5;
-      // change tool size
       Tools.setSize(Tools.getSize() - (deltaY / 100) * change);
-    } else if (evt.shiftKey) {
-      // scroll horizontally
-      window.scrollTo(
-        document.documentElement.scrollLeft + deltaY,
-        document.documentElement.scrollTop + deltaX,
-      );
     } else {
-      // regular scrolling
-      window.scrollTo(
-        document.documentElement.scrollLeft + deltaX,
-        document.documentElement.scrollTop + deltaY,
-      );
+      // Plain scroll — let the browser handle it natively
+      // (respects OS scroll-direction / natural-scrolling settings)
+      return;
     }
   }
   Tools.board.addEventListener("wheel", onwheel, { passive: false });

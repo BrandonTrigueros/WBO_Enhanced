@@ -46,10 +46,26 @@
         };
       }
 
+      /** Drawing tools that should only respond to stylus, not finger */
+      var drawingToolNames = {
+        "Pencil": true, "Straight line": true, "Rectangle": true,
+        "Ellipse": true, "Text": true, "Eraser": true,
+      };
+
       function compileTouch(listener) {
         return function touchListen(evt) {
           if (evt.changedTouches.length === 1) {
             var touch = evt.changedTouches[0];
+
+            // On tablets with stylus support: finger touch on a drawing tool
+            // should pan (let browser handle it), not draw.
+            // touchType is "stylus" for Apple Pencil, "direct" for finger.
+            // If touchType is undefined (non-Apple), fall through normally.
+            if (touch.touchType === "direct" &&
+                drawingToolNames[Tools.curTool && Tools.curTool.name]) {
+              return true; // let browser handle native scroll/pan
+            }
+
             var x, y;
             if (Tools.isBookMode) {
               var rect = Tools.svg.getBoundingClientRect();

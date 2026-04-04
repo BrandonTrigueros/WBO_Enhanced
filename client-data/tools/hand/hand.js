@@ -498,16 +498,13 @@
   }
 
   function startHand(x, y, evt, isTouchEvent) {
-    if (!isTouchEvent) {
-      selected = {
-        x: document.documentElement.scrollLeft + evt.clientX,
-        y: document.documentElement.scrollTop + evt.clientY,
-      };
-    }
+    selected = {
+      x: document.documentElement.scrollLeft + evt.clientX,
+      y: document.documentElement.scrollTop + evt.clientY,
+    };
   }
   function moveHand(x, y, evt, isTouchEvent) {
-    if (selected && !isTouchEvent) {
-      //Let the browser handle touch to scroll
+    if (selected) {
       window.scrollTo(selected.x - evt.clientX, selected.y - evt.clientY);
     }
   }
