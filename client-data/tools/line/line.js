@@ -157,5 +157,5 @@
     icon: "tools/line/icon.svg",
     stylesheet: "tools/line/line.css",
   };
-  Tools.add(lineTool);
+  Tools.register(lineTool);
 })(); //End of code isolation

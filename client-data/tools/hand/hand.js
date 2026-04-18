@@ -584,6 +584,6 @@
     mouseCursor: "move",
     showMarker: true,
   };
-  Tools.add(handTool);
-  Tools.change("Hand"); // Use the hand tool by default
+  Tools.register(handTool);
+  Tools.change("Pencil"); // Use the pencil tool by default
 })(); //End of code isolation

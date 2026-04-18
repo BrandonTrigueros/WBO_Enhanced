@@ -36,14 +36,6 @@ body {
   transform-origin: 0 0;
 }
 
-/* Hide Zoom tool button on touch-only devices (tablets/phones).
-   Pinch-to-zoom is handled automatically via pointer events. */
-@media (pointer: coarse) and (hover: none) {
-  #toolID-Zoom {
-    display: none;
-  }
-}
-
 /* ---------- Loading overlay ---------- */
 #loadingMessage {
   font-size: 0.95rem;
@@ -512,6 +504,49 @@ circle.opcursor {
 /* Hidden state toggled by JS when pointer leaves canvas */
 circle.opcursor.cursor-hidden {
   display: none;
+}
+
+/* ===================================================
+   SHAPES POPUP (toggle from Shapes toolbar button)
+   =================================================== */
+.shapesPopup {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  background: rgba(22, 22, 38, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  z-index: 3000;
+}
+.shapesPopup.hidden {
+  display: none;
+}
+.shapesPopup-btn {
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s;
+}
+.shapesPopup-btn img {
+  filter: brightness(0) invert(1);
+}
+.shapesPopup-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+.shapesPopup-btn:active {
+  transform: scale(0.9);
 }
 
 /* ===================================================

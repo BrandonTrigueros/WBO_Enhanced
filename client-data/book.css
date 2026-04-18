@@ -119,12 +119,7 @@ body.book-mode #canvas {
 
 /* ===================================================
    RESPONSIVE
-   =================================================== */
-/* In book mode, zoom is handled by the viewport transform.
-   Hide Zoom button — zoom via pinch/Ctrl+scroll. */
-body.book-mode #toolID-Zoom {
-  display: none;
-}
+   ===================================================== */
 
 /* ===================================================
    PAGE THUMBNAIL SIDEBAR (1.7)

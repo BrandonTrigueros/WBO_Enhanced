@@ -167,5 +167,5 @@
     icon: "tools/rect/icon.svg",
     stylesheet: "tools/rect/rect.css",
   };
-  Tools.add(rectangleTool);
+  Tools.register(rectangleTool);
 })(); //End of code isolation

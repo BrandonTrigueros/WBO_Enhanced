@@ -226,7 +226,7 @@
     return elem;
   }
 
-  Tools.add({
+  Tools.register({
     //The new tool
     name: "Text",
     shortcut: "t",

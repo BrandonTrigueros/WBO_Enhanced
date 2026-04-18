@@ -179,5 +179,5 @@
     mouseCursor: "crosshair",
     stylesheet: "tools/ellipse/ellipse.css",
   };
-  Tools.add(circleTool);
+  Tools.register(circleTool);
 })(); //End of code isolation
