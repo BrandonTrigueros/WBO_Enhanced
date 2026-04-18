@@ -52,26 +52,39 @@
         return function pointerListen(evt) {
           // Track active touch pointers for pinch detection
           if (evt.pointerType === "touch") {
-            if (eventPhase === "press") activeTouchCount++;
-            else if (eventPhase === "release") {
+            if (eventPhase === "press") {
+              activeTouchCount++;
+              // Invalidate finger-pan when a second finger arrives (pinch)
+              if (activeTouchCount >= 2) fingerPanState = null;
+            } else if (eventPhase === "release") {
               activeTouchCount = Math.max(0, activeTouchCount - 1);
             }
           }
 
-          // Finger on a drawing tool → pan/scroll instead of drawing
+          // Finger on a drawing tool → pan instead of drawing
           if (
             evt.pointerType === "touch" &&
             drawingToolNames[Tools.curTool && Tools.curTool.name]
           ) {
-            if (eventPhase === "press") {
+            if (eventPhase === "press" && activeTouchCount < 2) {
               evt.preventDefault();
-              fingerPanState = {
-                pointerId: evt.pointerId,
-                startX: evt.clientX,
-                startY: evt.clientY,
-                scrollX: document.documentElement.scrollLeft,
-                scrollY: document.documentElement.scrollTop,
-              };
+              if (Tools.isBookMode) {
+                fingerPanState = {
+                  pointerId: evt.pointerId,
+                  startX: evt.clientX,
+                  startY: evt.clientY,
+                  panX: Tools.bookPan.x,
+                  panY: Tools.bookPan.y,
+                };
+              } else {
+                fingerPanState = {
+                  pointerId: evt.pointerId,
+                  startX: evt.clientX,
+                  startY: evt.clientY,
+                  scrollX: document.documentElement.scrollLeft,
+                  scrollY: document.documentElement.scrollTop,
+                };
+              }
             } else if (
               eventPhase === "move" &&
               fingerPanState &&
@@ -79,10 +92,20 @@
               activeTouchCount < 2
             ) {
               evt.preventDefault();
-              window.scrollTo(
-                fingerPanState.scrollX - (evt.clientX - fingerPanState.startX),
-                fingerPanState.scrollY - (evt.clientY - fingerPanState.startY),
-              );
+              if (Tools.isBookMode) {
+                Tools.bookPan.x =
+                  fingerPanState.panX + (evt.clientX - fingerPanState.startX);
+                Tools.bookPan.y =
+                  fingerPanState.panY + (evt.clientY - fingerPanState.startY);
+                Tools.applyBookTransform();
+              } else {
+                window.scrollTo(
+                  fingerPanState.scrollX -
+                    (evt.clientX - fingerPanState.startX),
+                  fingerPanState.scrollY -
+                    (evt.clientY - fingerPanState.startY),
+                );
+              }
             } else if (
               eventPhase === "release" &&
               fingerPanState &&

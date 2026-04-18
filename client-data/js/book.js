@@ -242,6 +242,13 @@
     });
   }
 
+  // Reset viewport position when switching pages
+  if (Tools.resetBookViewport) {
+    pageHooks.onAfterSwitch.push(function () {
+      Tools.resetBookViewport();
+    });
+  }
+
   // ---- Initial load ----
   fetchMeta(function () {
     // Ensure currentPage is valid

@@ -39,9 +39,11 @@
     pressed = false;
 
   function zoom(origin, scale) {
-    var oldScale = origin.scale;
-    var newScale = Tools.setScale(scale);
-    if (!Tools.isBookMode) {
+    if (Tools.isBookMode) {
+      Tools.bookZoomAtPoint(scale, origin.viewportX, origin.viewportY);
+    } else {
+      var oldScale = origin.scale;
+      var newScale = Tools.setScale(scale);
       window.scrollTo(
         origin.scrollX + origin.x * (newScale - oldScale),
         origin.scrollY + origin.y * (newScale - oldScale),
@@ -64,6 +66,8 @@
     origin.y = y;
     origin.clientY = getClientY(evt);
     origin.scale = Tools.getScale();
+    origin.viewportX = evt.clientX;
+    origin.viewportY = evt.clientY;
   }
 
   function press(x, y, evt) {
@@ -93,28 +97,45 @@
     var deltaX = evt.deltaX * multiplier,
       deltaY = evt.deltaY * multiplier;
     if (evt.ctrlKey) {
-      // Ctrl+Scroll = zoom
+      // Ctrl+Scroll = zoom (or trackpad pinch, which the browser maps here)
       evt.preventDefault();
-      var scale = Tools.getScale();
-      var x = evt.pageX / scale;
-      var y = evt.pageY / scale;
-      setOrigin(x, y, evt);
-      animate((1 - deltaY / 800) * Tools.getScale());
+      if (Tools.isBookMode) {
+        Tools.bookZoomAtPoint(
+          (1 - deltaY / 800) * Tools.getScale(),
+          evt.clientX,
+          evt.clientY,
+        );
+      } else {
+        var scale = Tools.getScale();
+        var x = evt.pageX / scale;
+        var y = evt.pageY / scale;
+        setOrigin(x, y, evt);
+        animate((1 - deltaY / 800) * Tools.getScale());
+      }
     } else if (evt.altKey) {
       // Alt+Scroll = change tool size (Shift for finer control)
       evt.preventDefault();
       var change = evt.shiftKey ? 1 : 5;
       Tools.setSize(Tools.getSize() - (deltaY / 100) * change);
+    } else if (Tools.isBookMode) {
+      // In book mode, plain scroll pans the viewport
+      evt.preventDefault();
+      Tools.bookPan.x -= deltaX;
+      Tools.bookPan.y -= deltaY;
+      Tools.applyBookTransform();
     } else {
       // Plain scroll — let the browser handle it natively
-      // (respects OS scroll-direction / natural-scrolling settings)
       return;
     }
   }
-  Tools.board.addEventListener("wheel", onwheel, { passive: false });
+
+  // Event target: wrapper covers full viewport in book mode
+  var eventTarget = Tools.isBookMode
+    ? document.getElementById("a4-page-wrapper") || Tools.board
+    : Tools.board;
+  eventTarget.addEventListener("wheel", onwheel, { passive: false });
 
   // ── Pinch-to-zoom via Pointer Events ──
-  // Track active touch pointers for 2-finger zoom gesture
   var pinchPointers = {};
   var pinchActive = false;
 
@@ -141,18 +162,30 @@
     if (ids.length === 2) {
       var p1 = pinchPointers[ids[0]],
         p2 = pinchPointers[ids[1]];
-      var x = (p1.pageX + p2.pageX) / 2 / Tools.getScale(),
-        y = (p1.pageY + p2.pageY) / 2 / Tools.getScale();
       var distance = pinchDistance();
 
       if (!pinchActive) {
         pinchActive = true;
-        setOrigin(x, y, p1);
+        origin.scale = Tools.getScale();
         origin.distance = distance;
+      }
+
+      var delta = distance - origin.distance;
+      var newScale = origin.scale * (1 + (delta * ZOOM_FACTOR) / 100);
+
+      if (Tools.isBookMode) {
+        var vpX = (p1.clientX + p2.clientX) / 2;
+        var vpY = (p1.clientY + p2.clientY) / 2;
+        Tools.bookZoomAtPoint(newScale, vpX, vpY);
       } else {
-        var delta = distance - origin.distance;
-        var scale = origin.scale * (1 + (delta * ZOOM_FACTOR) / 100);
-        animate(scale);
+        var x = (p1.pageX + p2.pageX) / 2 / Tools.getScale(),
+          y = (p1.pageY + p2.pageY) / 2 / Tools.getScale();
+        if (!origin.pinchInitialized) {
+          setOrigin(x, y, p1);
+          origin.distance = distance;
+          origin.pinchInitialized = true;
+        }
+        animate(newScale);
       }
     }
   }
@@ -162,13 +195,14 @@
     delete pinchPointers[evt.pointerId];
     if (Object.keys(pinchPointers).length < 2) {
       pinchActive = false;
+      origin.pinchInitialized = false;
     }
   }
 
-  Tools.board.addEventListener("pointerdown", onPinchPointerDown);
-  Tools.board.addEventListener("pointermove", onPinchPointerMove);
-  Tools.board.addEventListener("pointerup", onPinchPointerUp);
-  Tools.board.addEventListener("pointercancel", onPinchPointerUp);
+  eventTarget.addEventListener("pointerdown", onPinchPointerDown);
+  eventTarget.addEventListener("pointermove", onPinchPointerMove);
+  eventTarget.addEventListener("pointerup", onPinchPointerUp);
+  eventTarget.addEventListener("pointercancel", onPinchPointerUp);
 
   function release(x, y, evt) {
     if (pressed && !moved) {

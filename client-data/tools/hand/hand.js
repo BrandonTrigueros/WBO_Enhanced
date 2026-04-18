@@ -498,14 +498,27 @@
   }
 
   function startHand(x, y, evt) {
-    selected = {
-      x: document.documentElement.scrollLeft + evt.clientX,
-      y: document.documentElement.scrollTop + evt.clientY,
-    };
+    if (Tools.isBookMode) {
+      selected = {
+        x: Tools.bookPan.x - evt.clientX,
+        y: Tools.bookPan.y - evt.clientY,
+      };
+    } else {
+      selected = {
+        x: document.documentElement.scrollLeft + evt.clientX,
+        y: document.documentElement.scrollTop + evt.clientY,
+      };
+    }
   }
   function moveHand(x, y, evt) {
     if (selected) {
-      window.scrollTo(selected.x - evt.clientX, selected.y - evt.clientY);
+      if (Tools.isBookMode) {
+        Tools.bookPan.x = selected.x + evt.clientX;
+        Tools.bookPan.y = selected.y + evt.clientY;
+        Tools.applyBookTransform();
+      } else {
+        window.scrollTo(selected.x - evt.clientX, selected.y - evt.clientY);
+      }
     }
   }
 

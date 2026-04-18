@@ -6,33 +6,33 @@
 /* ---------- Body in book mode ---------- */
 body.book-mode {
   background: #e8e8ec;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
+  height: 100vh;
+  margin: 0;
 }
 
-/* ---------- A4 page wrapper ---------- */
+/* ---------- A4 page wrapper (full-viewport container) ---------- */
 #a4-page-wrapper {
-  /* Centre the page horizontally */
-  display: flex;
-  justify-content: center;
-  padding: 30px 10px 110px; /* bottom space for floating toolbar */
-  min-height: 100vh;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
 }
 
 #a4-page-wrapper #board {
   /* A4 at 96 DPI = 794 × 1123 */
   width: 794px;
   height: 1123px;
-  max-width: 100vw;
   background: #ffffff;
   box-shadow:
     0 2px 20px rgba(0, 0, 0, 0.12),
     0 0 0 1px rgba(0, 0, 0, 0.04);
   border-radius: 4px;
   overflow: hidden;
-  position: relative;
-  flex-shrink: 0;
-  transform-origin: top center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
 }
 
 /* Lock the SVG canvas to A4 dimensions */
@@ -120,20 +120,10 @@ body.book-mode #canvas {
 /* ===================================================
    RESPONSIVE
    =================================================== */
-@media (max-width: 850px) {
-  #a4-page-wrapper #board {
-    /* Scale A4 to fit viewport width */
-    width: 100vw;
-    height: calc(100vw * 1123 / 794);
-    border-radius: 0;
-  }
-  body.book-mode #canvas {
-    width: 100%;
-    height: 100%;
-  }
-  #a4-page-wrapper {
-    padding: 0 0 100px;
-  }
+/* In book mode, zoom is handled by the viewport transform.
+   Hide Zoom button — zoom via pinch/Ctrl+scroll. */
+body.book-mode #toolID-Zoom {
+  display: none;
 }
 
 /* ===================================================

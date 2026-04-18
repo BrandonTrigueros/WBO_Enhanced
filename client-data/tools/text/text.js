@@ -81,9 +81,14 @@
   function editOldText(elem) {
     curText.id = elem.id;
     var r = elem.getBoundingClientRect();
-    var x = (r.left + document.documentElement.scrollLeft) / Tools.scale;
-    var y =
-      (r.top + r.height + document.documentElement.scrollTop) / Tools.scale;
+    var offsetX = Tools.isBookMode
+      ? -Tools.bookPan.x
+      : document.documentElement.scrollLeft;
+    var offsetY = Tools.isBookMode
+      ? -Tools.bookPan.y
+      : document.documentElement.scrollTop;
+    var x = (r.left + offsetX) / Tools.scale;
+    var y = (r.top + r.height + offsetY) / Tools.scale;
 
     curText.x = x;
     curText.y = y;
@@ -99,19 +104,22 @@
     active = true;
     if (!input.parentNode) board.appendChild(input);
     input.value = "";
-    var left = curText.x - document.documentElement.scrollLeft + "px";
     var clientW = Math.max(
       document.documentElement.clientWidth,
       window.innerWidth || 0,
     );
-    var x = curText.x * Tools.scale - document.documentElement.scrollLeft;
+    var panOffsetX = Tools.isBookMode ? Tools.bookPan.x : 0;
+    var panOffsetY = Tools.isBookMode ? Tools.bookPan.y : 0;
+    var scrollL = Tools.isBookMode ? 0 : document.documentElement.scrollLeft;
+    var scrollT = Tools.isBookMode ? 0 : document.documentElement.scrollTop;
+    var x = curText.x * Tools.scale + panOffsetX - scrollL;
     if (x + 250 > clientW) {
       x = Math.max(60, clientW - 260);
     }
 
     input.style.left = x + "px";
     input.style.top =
-      curText.y * Tools.scale - document.documentElement.scrollTop + 20 + "px";
+      curText.y * Tools.scale + panOffsetY - scrollT + 20 + "px";
     input.focus();
     input.addEventListener("keyup", textChangeHandler);
     input.addEventListener("blur", textChangeHandler);

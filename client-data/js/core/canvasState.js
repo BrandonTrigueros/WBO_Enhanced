@@ -33,8 +33,7 @@
   Tools.setScale = function setScale(scale) {
     var minScale, maxScale;
     if (Tools.isBookMode) {
-      // In book mode, allow zooming from 50% to 300% of the A4 page
-      minScale = 0.5;
+      minScale = 0.3;
       maxScale = 3;
     } else {
       var fullScale =
@@ -46,20 +45,75 @@
     if (isNaN(scale)) scale = 1;
     scale = Math.max(minScale, Math.min(maxScale, scale));
 
-    var target = Tools.isBookMode ? Tools.board : Tools.svg;
-    target.style.willChange = "transform";
-    target.style.transform = "scale(" + scale + ")";
-    clearTimeout(scaleTimeout);
-    scaleTimeout = setTimeout(function () {
-      target.style.willChange = "auto";
-    }, 1000);
-    Tools.scale = scale;
+    if (Tools.isBookMode) {
+      // In book mode, just store the scale.
+      // Caller applies the combined translate+scale via applyBookTransform.
+      Tools.scale = scale;
+    } else {
+      Tools.svg.style.willChange = "transform";
+      Tools.svg.style.transform = "scale(" + scale + ")";
+      clearTimeout(scaleTimeout);
+      scaleTimeout = setTimeout(function () {
+        Tools.svg.style.willChange = "auto";
+      }, 1000);
+      Tools.scale = scale;
+    }
     return scale;
   };
 
   Tools.getScale = function getScale() {
     return Tools.scale;
   };
+
+  // ── Book Mode Viewport ──
+  if (Tools.isBookMode) {
+    Tools.bookPan = { x: 0, y: 0 };
+
+    /** Apply the combined translate + scale transform to the board */
+    Tools.applyBookTransform = function () {
+      var p = Tools.bookPan;
+      var s = Tools.scale;
+      Tools.board.style.willChange = "transform";
+      Tools.board.style.transform =
+        "translate(" + p.x + "px," + p.y + "px) scale(" + s + ")";
+      clearTimeout(scaleTimeout);
+      scaleTimeout = setTimeout(function () {
+        Tools.board.style.willChange = "auto";
+      }, 1000);
+    };
+
+    /**
+     * Zoom at a specific viewport point (Figma-style).
+     * Adjusts pan so the content under (cx, cy) stays fixed.
+     */
+    Tools.bookZoomAtPoint = function (newScale, cx, cy) {
+      var oldScale = Tools.scale;
+      newScale = Tools.setScale(newScale); // clamp + store
+      var ratio = newScale / oldScale;
+      var pan = Tools.bookPan;
+      pan.x = cx - (cx - pan.x) * ratio;
+      pan.y = cy - (cy - pan.y) * ratio;
+      Tools.applyBookTransform();
+      return newScale;
+    };
+
+    /**
+     * Reset viewport: fit the A4 page to the viewport width and center it.
+     * Called on load and after page switches.
+     */
+    Tools.resetBookViewport = function () {
+      var vw = window.innerWidth;
+      var vh = window.innerHeight;
+      var fitScale = Math.min(1, (vw - 40) / 794);
+      Tools.scale = Math.max(0.3, fitScale);
+      // Centre horizontally, small top margin
+      Tools.bookPan.x = (vw - 794 * Tools.scale) / 2;
+      Tools.bookPan.y = Math.max(20, (vh - 1123 * Tools.scale) / 2);
+      Tools.applyBookTransform();
+    };
+
+    Tools.resetBookViewport();
+  }
 
   // ── Canvas Resize (message hook) ──
   function resizeCanvas(m) {
