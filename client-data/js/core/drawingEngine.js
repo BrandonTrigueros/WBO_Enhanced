@@ -126,13 +126,11 @@
 
           var x, y;
           if (Tools.isBookMode) {
-            var rect = Tools.svg.getBoundingClientRect();
-            x =
-              (evt.clientX - rect.left) *
-              (Tools.svg.width.baseVal.value / rect.width);
-            y =
-              (evt.clientY - rect.top) *
-              (Tools.svg.height.baseVal.value / rect.height);
+            // Pure math: board has translate(panX,panY) scale(s) with origin 0,0
+            // so SVG coord = (clientCoord - pan) / scale
+            // Avoids getBoundingClientRect() which forces a layout recalc
+            x = (evt.clientX - Tools.bookPan.x) / Tools.scale;
+            y = (evt.clientY - Tools.bookPan.y) / Tools.scale;
           } else {
             x = evt.pageX / Tools.getScale();
             y = evt.pageY / Tools.getScale();
