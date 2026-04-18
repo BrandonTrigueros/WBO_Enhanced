@@ -70,9 +70,19 @@
     Tools.bookPan = { x: 0, y: 0 };
 
     /** Apply the combined translate + scale transform to the board.
-     *  Coalesced via rAF so only one DOM mutation happens per display frame. */
+     *  Coalesced via rAF so only one DOM mutation happens per display frame.
+     *  will-change is enabled during gestures and cleared after to allow
+     *  the browser to re-rasterize SVG at full vector quality. */
     var bookTransformPending = false;
+    var willChangeTimeout = null;
     Tools.applyBookTransform = function () {
+      // Enable GPU compositing during gesture
+      Tools.board.style.willChange = "transform";
+      clearTimeout(willChangeTimeout);
+      willChangeTimeout = setTimeout(function () {
+        Tools.board.style.willChange = "auto";
+      }, 400);
+
       if (bookTransformPending) return;
       bookTransformPending = true;
       requestAnimationFrame(function () {
@@ -165,6 +175,7 @@
     });
 
     function setScrollFromHash() {
+      if (Tools.isBookMode) return; // book mode uses its own viewport
       var coords = window.location.hash.slice(1).split(",");
       var x = coords[0] | 0;
       var y = coords[1] | 0;
