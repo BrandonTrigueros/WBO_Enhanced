@@ -69,17 +69,19 @@
   if (Tools.isBookMode) {
     Tools.bookPan = { x: 0, y: 0 };
 
-    /** Apply the combined translate + scale transform to the board */
+    /** Apply the combined translate + scale transform to the board.
+     *  Coalesced via rAF so only one DOM mutation happens per display frame. */
+    var bookTransformPending = false;
     Tools.applyBookTransform = function () {
-      var p = Tools.bookPan;
-      var s = Tools.scale;
-      Tools.board.style.willChange = "transform";
-      Tools.board.style.transform =
-        "translate(" + p.x + "px," + p.y + "px) scale(" + s + ")";
-      clearTimeout(scaleTimeout);
-      scaleTimeout = setTimeout(function () {
-        Tools.board.style.willChange = "auto";
-      }, 1000);
+      if (bookTransformPending) return;
+      bookTransformPending = true;
+      requestAnimationFrame(function () {
+        bookTransformPending = false;
+        var p = Tools.bookPan;
+        var s = Tools.scale;
+        Tools.board.style.transform =
+          "translate(" + p.x + "px," + p.y + "px) scale(" + s + ")";
+      });
     };
 
     /**
