@@ -69,15 +69,8 @@
   function erase(x, y, evt) {
     if (!erasing) return;
 
-    var clientX, clientY;
-    if (evt.type === "touchmove" || evt.type === "touchstart") {
-      var touch = evt.touches[0];
-      clientX = touch.clientX;
-      clientY = touch.clientY;
-    } else {
-      clientX = evt.clientX;
+    var clientX = evt.clientX,
       clientY = evt.clientY;
-    }
 
     var deleted = {};
 

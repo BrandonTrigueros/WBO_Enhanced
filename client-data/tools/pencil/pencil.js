@@ -53,7 +53,7 @@
   }
 
   function handleAutoWhiteOut(evt) {
-    if (evt.touches && evt.touches[0] && evt.touches[0].touchType == "stylus") {
+    if (evt.pointerType === "pen") {
       //When using stylus, switch back to the primary
       if (hasUsedStylus && Tools.curTool.secondary.active) {
         Tools.change("Pencil");
@@ -61,7 +61,7 @@
       //Remember if starting a line with a stylus
       hasUsedStylus = true;
     }
-    if (evt.touches && evt.touches[0] && evt.touches[0].touchType == "direct") {
+    if (evt.pointerType === "touch") {
       //When used stylus and touched with a finger, switch to secondary
       if (hasUsedStylus && !Tools.curTool.secondary.active) {
         Tools.change("Pencil");

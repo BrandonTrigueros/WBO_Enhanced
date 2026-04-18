@@ -36,6 +36,14 @@ body {
   transform-origin: 0 0;
 }
 
+/* Hide Zoom tool button on touch-only devices (tablets/phones).
+   Pinch-to-zoom is handled automatically via pointer events. */
+@media (pointer: coarse) and (hover: none) {
+  #toolID-Zoom {
+    display: none;
+  }
+}
+
 /* ---------- Loading overlay ---------- */
 #loadingMessage {
   font-size: 0.95rem;

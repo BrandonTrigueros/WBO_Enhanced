@@ -497,31 +497,31 @@
     }
   }
 
-  function startHand(x, y, evt, isTouchEvent) {
+  function startHand(x, y, evt) {
     selected = {
       x: document.documentElement.scrollLeft + evt.clientX,
       y: document.documentElement.scrollTop + evt.clientY,
     };
   }
-  function moveHand(x, y, evt, isTouchEvent) {
+  function moveHand(x, y, evt) {
     if (selected) {
       window.scrollTo(selected.x - evt.clientX, selected.y - evt.clientY);
     }
   }
 
-  function press(x, y, evt, isTouchEvent) {
-    if (!handTool.secondary.active) startHand(x, y, evt, isTouchEvent);
-    else clickSelector(x, y, evt, isTouchEvent);
+  function press(x, y, evt) {
+    if (!handTool.secondary.active) startHand(x, y, evt);
+    else clickSelector(x, y, evt);
   }
 
-  function move(x, y, evt, isTouchEvent) {
-    if (!handTool.secondary.active) moveHand(x, y, evt, isTouchEvent);
-    else moveSelector(x, y, evt, isTouchEvent);
+  function move(x, y, evt) {
+    if (!handTool.secondary.active) moveHand(x, y, evt);
+    else moveSelector(x, y, evt);
   }
 
-  function release(x, y, evt, isTouchEvent) {
-    move(x, y, evt, isTouchEvent);
-    if (handTool.secondary.active) releaseSelector(x, y, evt, isTouchEvent);
+  function release(x, y, evt) {
+    move(x, y, evt);
+    if (handTool.secondary.active) releaseSelector(x, y, evt);
     selected = null;
   }
 

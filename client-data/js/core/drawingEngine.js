@@ -27,8 +27,80 @@
       var compiled = tool.compiledListeners || {};
       tool.compiledListeners = compiled;
 
-      function compile(listener) {
-        return function listen(evt) {
+      /** Drawing tools that should only respond to stylus/mouse, not finger */
+      var drawingToolNames = {
+        Pencil: true,
+        "Straight line": true,
+        Rectangle: true,
+        Ellipse: true,
+        Text: true,
+        Eraser: true,
+      };
+
+      /**
+       * Compile a pointer-event listener that discriminates by pointerType.
+       * - "pen"   → always handle (stylus drawing)
+       * - "mouse" → always handle (desktop)
+       * - "touch" → on drawing tools, finger-pan instead of drawing;
+       *             on Hand/Zoom/other tools, handle normally.
+       */
+      var fingerPanState = null;
+      /** Count of active touch pointers (used to suppress pan during pinch) */
+      var activeTouchCount = 0;
+
+      function compilePointer(listener, eventPhase) {
+        return function pointerListen(evt) {
+          // Track active touch pointers for pinch detection
+          if (evt.pointerType === "touch") {
+            if (eventPhase === "press") activeTouchCount++;
+            else if (eventPhase === "release") {
+              activeTouchCount = Math.max(0, activeTouchCount - 1);
+            }
+          }
+
+          // Finger on a drawing tool → pan/scroll instead of drawing
+          if (
+            evt.pointerType === "touch" &&
+            drawingToolNames[Tools.curTool && Tools.curTool.name]
+          ) {
+            if (eventPhase === "press") {
+              evt.preventDefault();
+              fingerPanState = {
+                pointerId: evt.pointerId,
+                startX: evt.clientX,
+                startY: evt.clientY,
+                scrollX: document.documentElement.scrollLeft,
+                scrollY: document.documentElement.scrollTop,
+              };
+            } else if (
+              eventPhase === "move" &&
+              fingerPanState &&
+              fingerPanState.pointerId === evt.pointerId &&
+              activeTouchCount < 2
+            ) {
+              evt.preventDefault();
+              window.scrollTo(
+                fingerPanState.scrollX - (evt.clientX - fingerPanState.startX),
+                fingerPanState.scrollY - (evt.clientY - fingerPanState.startY),
+              );
+            } else if (
+              eventPhase === "release" &&
+              fingerPanState &&
+              fingerPanState.pointerId === evt.pointerId
+            ) {
+              fingerPanState = null;
+            }
+            return;
+          }
+
+          // For pen input, capture the pointer so we get all move/up events
+          // even if the pen moves outside the board element
+          if (evt.pointerType === "pen" && evt.type === "pointerdown") {
+            evt.currentTarget.setPointerCapture(evt.pointerId);
+          }
+
+          evt.preventDefault();
+
           var x, y;
           if (Tools.isBookMode) {
             var rect = Tools.svg.getBoundingClientRect();
@@ -46,51 +118,6 @@
         };
       }
 
-      /** Drawing tools that should only respond to stylus, not finger */
-      var drawingToolNames = {
-        Pencil: true,
-        "Straight line": true,
-        Rectangle: true,
-        Ellipse: true,
-        Text: true,
-        Eraser: true,
-      };
-
-      function compileTouch(listener) {
-        return function touchListen(evt) {
-          if (evt.changedTouches.length === 1) {
-            var touch = evt.changedTouches[0];
-
-            // On tablets with stylus support: finger touch on a drawing tool
-            // should pan (let browser handle it), not draw.
-            // touchType is "stylus" for Apple Pencil, "direct" for finger.
-            // If touchType is undefined (non-Apple), fall through normally.
-            if (
-              touch.touchType === "direct" &&
-              drawingToolNames[Tools.curTool && Tools.curTool.name]
-            ) {
-              return true; // let browser handle native scroll/pan
-            }
-
-            var x, y;
-            if (Tools.isBookMode) {
-              var rect = Tools.svg.getBoundingClientRect();
-              x =
-                (touch.clientX - rect.left) *
-                (Tools.svg.width.baseVal.value / rect.width);
-              y =
-                (touch.clientY - rect.top) *
-                (Tools.svg.height.baseVal.value / rect.height);
-            } else {
-              x = touch.pageX / Tools.getScale();
-              y = touch.pageY / Tools.getScale();
-            }
-            return listener(x, y, evt, true);
-          }
-          return true;
-        };
-      }
-
       function wrapUnsetHover(f) {
         return function unsetHover(evt) {
           document.activeElement &&
@@ -101,21 +128,18 @@
       }
 
       if (listeners.press) {
-        compiled["mousedown"] = wrapUnsetHover(compile(listeners.press));
-        compiled["touchstart"] = wrapUnsetHover(compileTouch(listeners.press));
+        compiled["pointerdown"] = wrapUnsetHover(
+          compilePointer(listeners.press, "press"),
+        );
       }
       if (listeners.move) {
-        compiled["mousemove"] = compile(listeners.move);
-        compiled["touchmove"] = compileTouch(listeners.move);
+        compiled["pointermove"] = compilePointer(listeners.move, "move");
       }
       if (listeners.release) {
-        var release = compile(listeners.release),
-          releaseTouch = compileTouch(listeners.release);
-        compiled["mouseup"] = release;
-        if (!Tools.isIE) compiled["mouseleave"] = release;
-        compiled["touchleave"] = releaseTouch;
-        compiled["touchend"] = releaseTouch;
-        compiled["touchcancel"] = releaseTouch;
+        var releasePointer = compilePointer(listeners.release, "release");
+        compiled["pointerup"] = releasePointer;
+        compiled["pointercancel"] = releasePointer;
+        if (!Tools.isIE) compiled["pointerleave"] = releasePointer;
       }
     },
   ];
