@@ -32,13 +32,14 @@ body.book-mode {
   overflow: hidden;
   position: relative;
   flex-shrink: 0;
+  transform-origin: top center;
 }
 
 /* Lock the SVG canvas to A4 dimensions */
 body.book-mode #canvas {
   width: 794px;
   height: 1123px;
-  transform: none !important; /* disable board.js scaling */
+  /* transform is set dynamically by canvasState.js for zoom */
 }
 
 /* ===================================================

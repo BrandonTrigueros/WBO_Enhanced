@@ -31,18 +31,27 @@
   var scaleTimeout = null;
 
   Tools.setScale = function setScale(scale) {
-    var fullScale =
-      Math.max(window.innerWidth, window.innerHeight) /
-      Tools.server_config.MAX_BOARD_SIZE;
-    var minScale = Math.max(0.1, fullScale);
-    var maxScale = 10;
+    var minScale, maxScale;
+    if (Tools.isBookMode) {
+      // In book mode, allow zooming from 50% to 300% of the A4 page
+      minScale = 0.5;
+      maxScale = 3;
+    } else {
+      var fullScale =
+        Math.max(window.innerWidth, window.innerHeight) /
+        Tools.server_config.MAX_BOARD_SIZE;
+      minScale = Math.max(0.1, fullScale);
+      maxScale = 10;
+    }
     if (isNaN(scale)) scale = 1;
     scale = Math.max(minScale, Math.min(maxScale, scale));
-    Tools.svg.style.willChange = "transform";
-    Tools.svg.style.transform = "scale(" + scale + ")";
+
+    var target = Tools.isBookMode ? Tools.board : Tools.svg;
+    target.style.willChange = "transform";
+    target.style.transform = "scale(" + scale + ")";
     clearTimeout(scaleTimeout);
     scaleTimeout = setTimeout(function () {
-      Tools.svg.style.willChange = "auto";
+      target.style.willChange = "auto";
     }, 1000);
     Tools.scale = scale;
     return scale;
