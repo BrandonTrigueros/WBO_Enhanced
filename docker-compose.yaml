@@ -1,0 +1,9 @@
+services:
+  whiteboard-custom:
+    build: .
+    container_name: wbo-enhanced
+    restart: always
+    ports:
+      - "9090:8080"
+    volumes:
+      - ./wbo-boards:/opt/app/server-data
