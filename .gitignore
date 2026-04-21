@@ -33,3 +33,5 @@ tests_output/
 # Server data (runtime boards/books)
 server-data/*
 !server-data/.gitignore
+
+wbo-boards/*
